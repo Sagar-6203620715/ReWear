@@ -2,9 +2,9 @@
 import React from 'react';
 import { FiFilter, FiMessageCircle } from 'react-icons/fi';
 
-const HeaderActions = ({ onFilterClick, onDiscussClick }) => (
+const HeaderActions = ({ domainName, onFilterClick, onDiscussClick }) => (
   <div className="flex items-center gap-4 mb-4">
-    <h2 className="text-3xl font-bold">Web Development</h2>
+    <h2 className="text-3xl font-bold">{domainName}</h2>
 
     <button
       onClick={onFilterClick}

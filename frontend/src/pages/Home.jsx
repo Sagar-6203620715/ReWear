@@ -21,7 +21,7 @@ const Home = () => {
       <Hero />
       {!loading && sections.map(section => (
         <div key={section._id}>
-          <h2 className="text-3xl font-bold ml-6 mt-10">{section.name}</h2>
+          
           {/* Dispatch fetchDomainsBySection for each section */}
           <DynamicDomains sectionName={section.name} />
           <LoadMore x={section.name} />
@@ -33,23 +33,24 @@ const Home = () => {
 
 const DynamicDomains = ({ sectionName }) => {
   const dispatch = useDispatch();
-  const [localDomains, setLocalDomains] = React.useState([]);
+  const [firstDomain, setFirstDomain] = React.useState(null);
 
   useEffect(() => {
     const fetchDomains = async () => {
       const res = await dispatch(fetchDomainsBySection(sectionName));
-      if (res.payload) setLocalDomains(res.payload);
+      if (res.payload && res.payload.length > 0) {
+        setFirstDomain(res.payload[0]);  // pick only the first domain
+      }
     };
     fetchDomains();
   }, [dispatch, sectionName]);
 
   return (
     <>
-      {localDomains.map(domain => (
-        <DomainCourses key={domain._id} domain={domain.name} />
-      ))}
+      {firstDomain && <DomainCourses domain={firstDomain} />}
     </>
   );
 };
+
 
 export default Home;

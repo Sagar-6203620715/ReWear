@@ -23,7 +23,10 @@ const CourseCard = ({ course, onSelect }) => {
 
       <div
         className="absolute top-2 right-2 flex space-x-1 bg-white/70 px-2 py-1 rounded-md z-10 cursor-pointer"
-        onClick={() => onSelect(course)}
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent link trigger
+          onSelect(course);
+        }}
       >
         {[1, 2, 3, 4, 5].map((star) => (
           <FaStar

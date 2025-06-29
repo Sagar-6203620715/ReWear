@@ -8,8 +8,9 @@ const router =express.Router();
 
 router.get("/",protect,admin,async (req,res)=>{
   try{
-    const courses=await Domain.find({});
-    res.json(courses);
+    const domains = await Domain.find({});
+    res.json(domains);
+
   }catch(error){
     console.error(error);
     res.status(500).json({message:"server error"});

@@ -11,6 +11,7 @@ const subscriberRoutes = require("./routes/subscriberRoutes");
 const adminRoutes = require("./routes/adminRoutes"); 
 const courseAdminRoutes=require("./routes/courseAdminRoutes");
 const domainAdminRoutes=require("./routes/domainAdminRoutes");
+const chatRoutes = require('./routes/chatRoutes');
 
 const app = express();
 app.use(express.json());
@@ -32,6 +33,7 @@ app.use("/api/domains", domainRoutes);
 app.use("/api/upload",uploadRoutes);
 app.use("/api/",subscriberRoutes);
 app.use("/api/sections", sectionRoutes);
+app.use('/api/chats', chatRoutes);
 
 
 

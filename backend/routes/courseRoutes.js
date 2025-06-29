@@ -99,7 +99,7 @@ router.delete("/:id",protect,admin,async(req,res)=>{
       await course.deleteOne();
       res.json({message:"product removed"});
     }else{
-      res.status(404).json({message:"product not found"});
+      res.status(404).json({message:"course not found"});
     }
   }catch(error){
     console.error(error);
@@ -110,19 +110,20 @@ router.delete("/:id",protect,admin,async(req,res)=>{
 
 router.get("/", async (req, res) => {
   try {
-    const { search, type, domain } = req.query;
+    const { search, sortBy, domain } = req.query;
     let query = {};
     let sort = {};
 
     if (domain) {
-      query.domain = domain; // let mongoose handle string to ObjectId
+      query.domain = domain;
     }
 
     if (search) {
       query.name = { $regex: search, $options: "i" };
     }
 
-    switch (type) {
+    // Sort logic
+    switch (sortBy) {
       case "priceLow":
         sort.price = 1;
         break;
@@ -137,20 +138,25 @@ router.get("/", async (req, res) => {
         break;
       case "durationLow":
       case "durationHigh":
-        const allCourses = await Course.find(query);
+        const allCourses = await Course.find(query).populate("domain section user", "name");
         const getTotalMonths = (d) => d.years * 12 + d.months;
-
+    
         const sorted = allCourses.sort((a, b) => {
           const aDur = getTotalMonths(a.duration);
           const bDur = getTotalMonths(b.duration);
-          return type === "durationLow" ? aDur - bDur : bDur - aDur;
+          return sortBy === "durationLow" ? aDur - bDur : bDur - aDur;
         });
-
+    
         return res.json(sorted);
+    
+      default:
+        sort.createdAt = -1;
     }
+    
 
-    const courses = await Course.find(query).sort(sort);
-    console.log("Query:", query);
+    const courses = await Course.find(query)
+      .sort(sort)
+      .populate("domain section user", "name");
 
     res.json(courses);
   } catch (error) {
@@ -159,9 +165,12 @@ router.get("/", async (req, res) => {
   }
 });
 
+
 router.get("/:id",async (req,res)=>{
   try{
-    const course=await Course.findById(req.params.id);
+    const course = await Course.findById(req.params.id)
+  .populate("domain section user", "name");
+
     if(course){
       res.json(course);
     }else{

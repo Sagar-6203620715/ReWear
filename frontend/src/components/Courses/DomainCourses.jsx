@@ -1,4 +1,3 @@
-// components/Courses/DomainCourses.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import RatingForm from '../Layout/RatingForm';
@@ -22,7 +21,7 @@ const DomainCourses = ({ domain }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domain}`);
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domain._id}`);
         setCourses(res.data);
         setSortedCourses(res.data);
       } catch (error) {
@@ -30,7 +29,7 @@ const DomainCourses = ({ domain }) => {
       }
     };
     fetchCourses();
-  }, [domain]);
+  }, [domain._id]);
 
   const updateScrollButtons = () => {
     const container = scrollRef.current;
@@ -50,7 +49,7 @@ const DomainCourses = ({ domain }) => {
 
   const handleSort = async (type) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domain}&sortBy=${type}`);
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domain._id}&sortBy=${type}`);
       setSortedCourses(res.data);
       setIsFilterOpen(false);
     } catch (error) {
@@ -61,9 +60,14 @@ const DomainCourses = ({ domain }) => {
   return (
     <section className="py-8 px-4 lg:px-0">
       <div className="container mx-auto text-center mb-10 relative">
-        <h2 className="text-2xl font-bold mb-4">{domain}</h2>
-        <HeaderActions onFilterClick={() => setIsFilterOpen(true)} onDiscussClick={() => setIsDrawerOpen(true)} />
-        <ChatDrawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+        
+        <HeaderActions domainName={domain.name} onFilterClick={() => setIsFilterOpen(true)} onDiscussClick={() => setIsDrawerOpen(true)} />
+        <ChatDrawer
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          domainId={domain._id}
+        />
+
         <ScrollButtons
           canScrollLeft={canScrollLeft}
           canScrollRight={canScrollRight}
