@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const domainRoutes = require("./routes/domainRoutes"); 
+const sectionRoutes = require("./routes/sectionRoutes"); 
 const uploadRoutes = require("./routes/uploadRoutes"); 
 const subscriberRoutes = require("./routes/subscriberRoutes"); 
 const adminRoutes = require("./routes/adminRoutes"); 
@@ -30,6 +31,8 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/domains", domainRoutes); 
 app.use("/api/upload",uploadRoutes);
 app.use("/api/",subscriberRoutes);
+app.use("/api/sections", sectionRoutes);
+
 
 
 //admin routes

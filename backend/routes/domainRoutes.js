@@ -29,18 +29,31 @@ router.post("/", protect, admin, async (req, res) => {
   }
 });
 
-// @route   GET /api/domains
-// @desc    Get all domains
+// @route   GET /api/domains?section=Tech
+// @desc    Get domains (optionally filtered by section)
 router.get("/", async (req, res) => {
   try {
-    console.log("GET /api/domains called");
-    const domains = await Domain.find().populate("section", "name");
+    const { section } = req.query;
+    const query = {};
+
+    if (section) {
+      // Find section ID by name
+      const sectionDoc = await Section.findOne({ name: section });
+      if (!sectionDoc) {
+        return res.status(404).json({ message: "Section not found" });
+      }
+      query.section = sectionDoc._id;
+    }
+
+    const domains = await Domain.find(query).populate("section", "name");
     res.json(domains);
   } catch (error) {
     console.error("Error fetching domains:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
 
 // @route   PUT /api/domains/:id
 // @desc    Update domain (admin only)
