@@ -7,6 +7,8 @@ const userRoutes = require("./routes/userRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const domainRoutes = require("./routes/domainRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const sectionRoutes = require("./routes/sectionRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 const app = express();
 
 const PORT = process.env.PORT || 9000;
@@ -35,6 +37,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/domains", domainRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/sections", sectionRoutes);
+app.use("/api/chats", chatRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
