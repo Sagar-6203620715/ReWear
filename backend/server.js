@@ -119,7 +119,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/domains", domainRoutes); 
 app.use("/api/upload", uploadRoutes);
-app.use("/api/", subscriberRoutes);
+//app.use("/api/", subscriberRoutes);
 app.use("/api/sections", sectionRoutes);
 app.use('/api/chats', chatRoutes);
 
