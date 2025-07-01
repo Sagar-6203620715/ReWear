@@ -125,9 +125,9 @@ app.get("/", (req, res) => {
 // app.use("/api/", subscriberRoutes); // should already be commented out
 
 // Admin routes
-app.use("/api/admin/users", adminRoutes);
-app.use("/api/admin/courses", courseAdminRoutes);
-app.use("/api/admin/domains", domainAdminRoutes);
+// app.use("/api/admin/users", adminRoutes);
+// app.use("/api/admin/courses", courseAdminRoutes);
+// app.use("/api/admin/domains", domainAdminRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
