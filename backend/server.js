@@ -115,13 +115,14 @@ app.get("/", (req, res) => {
 });
 
 // API routes
-app.use("/api/users", userRoutes);
-app.use("/api/courses", courseRoutes);
-app.use("/api/domains", domainRoutes); 
-app.use("/api/upload", uploadRoutes);
-//app.use("/api/", subscriberRoutes);
-app.use("/api/sections", sectionRoutes);
-app.use('/api/chats', chatRoutes);
+// app.use("/api/users", userRoutes);
+// app.use("/api/courses", courseRoutes);
+// app.use("/api/domains", domainRoutes);
+// app.use("/api/upload", uploadRoutes);
+// app.use("/api/sections", sectionRoutes);
+// app.use('/api/chats', chatRoutes);
+// app.use("/api/admin/users", adminRoutes);
+// app.use("/api/", subscriberRoutes); // should already be commented out
 
 // Admin routes
 app.use("/api/admin/users", adminRoutes);
