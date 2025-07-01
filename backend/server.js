@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/userRoutes");
+const courseRoutes = require("./routes/courseRoutes");
 const app = express();
 
 const PORT = process.env.PORT || 9000;
@@ -29,6 +30,7 @@ if (MONGO_URI) {
 }
 
 app.use("/api/users", userRoutes);
+app.use("/api/courses", courseRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
