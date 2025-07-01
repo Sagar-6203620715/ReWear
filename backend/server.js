@@ -3,6 +3,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoose = require("mongoose");
+const http = require('http');
+const { Server } = require('socket.io');
 const userRoutes = require("./routes/userRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const domainRoutes = require("./routes/domainRoutes");
@@ -30,7 +32,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // MongoDB connection
 if (MONGO_URI) {
-  mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  mongoose.connect(MONGO_URI)
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.error("MongoDB connection error:", err));
 } else {
@@ -56,6 +58,50 @@ app.get("/", (req, res) => {
   res.json({ message: "Coursify API" });
 });
 
-app.listen(PORT, () => {
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.NODE_ENV === 'production'
+      ? [process.env.FRONTEND_URL || 'http://localhost:5173']
+      : ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'],
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  socket.on('joinRoom', (domainId) => {
+    socket.join(domainId);
+    console.log(`User ${socket.id} joined room: ${domainId}`);
+  });
+
+  socket.on('chatMessage', (data) => {
+    io.to(data.domainId).emit('chatMessage', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({
+    message: `Route ${req.originalUrl} not found`,
+    status: 404
+  });
+});
+
+// Centralized error handler
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(err.status || 500).json({
+    message: err.message || "Internal Server Error"
+  });
+});
+
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
