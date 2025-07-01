@@ -9,6 +9,8 @@ const domainRoutes = require("./routes/domainRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const sectionRoutes = require("./routes/sectionRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const courseAdminRoutes = require("./routes/courseAdminRoutes");
 const app = express();
 
 const PORT = process.env.PORT || 9000;
@@ -39,6 +41,8 @@ app.use("/api/domains", domainRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/sections", sectionRoutes);
 app.use("/api/chats", chatRoutes);
+app.use("/api/admin/users", adminRoutes);
+app.use("/api/admin/courses", courseAdminRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
