@@ -13,6 +13,8 @@ app.use(rateLimit({
   max: 1000,
   message: "Too many requests from this IP, please try again later."
 }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
