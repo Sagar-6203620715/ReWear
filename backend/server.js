@@ -3,6 +3,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoose = require("mongoose");
+const userRoutes = require("./routes/userRoutes");
 const app = express();
 
 const PORT = process.env.PORT || 9000;
@@ -26,6 +27,8 @@ if (MONGO_URI) {
 } else {
   console.warn("MONGO_URI not set. Skipping DB connection.");
 }
+
+app.use("/api/users", userRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
