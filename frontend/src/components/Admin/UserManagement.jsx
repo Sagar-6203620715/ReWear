@@ -1,50 +1,81 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const UserManagement = () => {
-  const users=[
-    {
-      _id:123123,
-      name:"john",
-      email:"john@email.com",
-      role:"admin",
-    },
-  ]
-  const [formData,setFormData]=useState({
-    name:"",
-    email:"",
-    password:"",
-    role:"customer",
+  const [users, setUsers] = useState([]);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'customer',
   });
+  const [error, setError] = useState('');
 
-  const handleChange=(e)=>{
+  const token = localStorage.getItem('userToken');
+
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(res.data);
+    } catch (err) {
+      setUsers([]);
+      setError('Failed to fetch users');
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]:e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit=(e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    setFormData({
-      name:"",
-      email:"",
-      password:"",
-      role:"customer",
-
-    });
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/admin/users`,
+        formData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setFormData({ name: '', email: '', password: '', role: 'customer' });
+      fetchUsers();
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Failed to add user');
+    }
   };
 
-  const handleRoleChange=(userId,newRole)=>{
-    console.log({id:userId,role:newRole});
-  }
-
-  const handleDeleteUser=(userId)=>{
-    if(window.confirm("are you sure you want to delete this user")){
-      console.log("delete user with id ",userId);
+  const handleRoleChange = async (userId, newRole) => {
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/admin/users/${userId}`,
+        { role: newRole },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchUsers();
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Failed to update role');
     }
+  };
 
-  }
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm('Are you sure you want to delete this user?')) return;
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/api/admin/users/${userId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchUsers();
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Failed to delete user');
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -53,10 +84,8 @@ const UserManagement = () => {
         <h3 className="text-lg font-bold mb-4">Add new User</h3>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 ">
-              Name
-            </label>
-            <input 
+            <label className="block text-gray-700 ">Name</label>
+            <input
               type="text"
               name="name"
               value={formData.name}
@@ -66,10 +95,8 @@ const UserManagement = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 ">
-              Email
-            </label>
-            <input 
+            <label className="block text-gray-700 ">Email</label>
+            <input
               type="email"
               name="email"
               value={formData.email}
@@ -79,10 +106,8 @@ const UserManagement = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 ">
-              Password
-            </label>
-            <input 
+            <label className="block text-gray-700 ">Password</label>
+            <input
               type="password"
               name="password"
               value={formData.password}
@@ -92,9 +117,7 @@ const UserManagement = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 ">
-              Role
-            </label>
+            <label className="block text-gray-700 ">Role</label>
             <select
               name="role"
               value={formData.role}
@@ -105,6 +128,7 @@ const UserManagement = () => {
               <option value="admin">Admin</option>
             </select>
           </div>
+          {error && <div className="text-red-600 mb-2">{error}</div>}
           <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">Add User</button>
         </form>
       </div>
@@ -120,37 +144,35 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user)=>{
-              return(
-                <tr key={user._id} className="border-b hover:bg-gray-50">
-                <td className="p-4 font-medium text-gray-900 whitespace-nowrap">
-                  {user.name}
-                </td>
+            {users.map((user) => (
+              <tr key={user._id} className="border-b hover:bg-gray-50">
+                <td className="p-4 font-medium text-gray-900 whitespace-nowrap">{user.name}</td>
                 <td className="p-4">{user.email}</td>
                 <td className="p-4">
-                  <select value={user.role} onChange={(e)=>handleRoleChange(user._id,e.target.value)} className="p-2 border rounded">
+                  <select
+                    value={user.role}
+                    onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                    className="p-2 border rounded"
+                  >
                     <option value="customer">Customer</option>
                     <option value="admin">Admin</option>
                   </select>
                 </td>
                 <td className="p-4">
                   <button
-                    onClick={()=>handleDeleteUser(user._id)}
+                    onClick={() => handleDeleteUser(user._id)}
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                   >
                     Delete
                   </button>
                 </td>
-
               </tr>
-              )
-              
-            })}
+            ))}
           </tbody>
         </table>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default UserManagement
+export default UserManagement;

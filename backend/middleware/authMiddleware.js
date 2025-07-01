@@ -9,9 +9,18 @@ const protect=async(req,res,next)=>{
   ){
     try{
       token=req.headers.authorization.split(" ")[1];
+      console.log("Token received:", token.substring(0, 20) + "...");
+      
       const decoded=jwt.verify(token,process.env.JWT_SECRET);
+      console.log("Decoded token:", decoded);
 
       req.user=await User.findById(decoded.user.id).select("-password");
+      console.log("User found:", req.user ? req.user._id : "No user found");
+      
+      if (!req.user) {
+        return res.status(401).json({message:"User not found"});
+      }
+      
       next();
 
     }catch(error){

@@ -13,6 +13,16 @@ export const fetchDomainsBySection = createAsyncThunk(
   }
 );
 
+export const fetchAllDomains = createAsyncThunk(
+  "domains/fetchAll",
+  async () => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/domains`
+    );
+    return response.data; // Assumes backend returns [{ _id, name, ... }]
+  }
+);
+
 const domainSlice = createSlice({
   name: "domains",
   initialState: {
@@ -32,6 +42,18 @@ const domainSlice = createSlice({
         state.domains = action.payload;
       })
       .addCase(fetchDomainsBySection.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetchAllDomains.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllDomains.fulfilled, (state, action) => {
+        state.loading = false;
+        state.domains = action.payload;
+      })
+      .addCase(fetchAllDomains.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

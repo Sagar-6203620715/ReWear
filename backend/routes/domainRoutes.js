@@ -55,6 +55,29 @@ router.get("/", async (req, res) => {
 
 
 
+// @route GET /api/domains/search?query=web
+// @desc Search domains by name
+router.get("/search", async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({ message: "Query is required" });
+  }
+
+  try {
+    const matchedDomains = await Domain.find({
+      name: { $regex: query, $options: "i" },
+    }).populate("section", "name");
+
+    res.json(matchedDomains);
+  } catch (error) {
+    console.error("Error searching domains:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
 // @route   PUT /api/domains/:id
 // @desc    Update domain (admin only)
 router.put("/:id", protect, admin, async (req, res) => {
@@ -78,7 +101,7 @@ router.put("/:id", protect, admin, async (req, res) => {
 });
 
 // @route   DELETE /api/domains/:id
-// @desc    Delete domain (admin only)
+// @desc    Delete domain and all associated courses (admin only)
 router.delete("/:id", protect, admin, async (req, res) => {
   try {
     const domain = await Domain.findById(req.params.id);
@@ -86,8 +109,26 @@ router.delete("/:id", protect, admin, async (req, res) => {
       return res.status(404).json({ message: "Domain not found" });
     }
 
+    // Import Course model
+    const Course = require("../models/Course");
+
+    // Find and delete all courses associated with this domain
+    const coursesToDelete = await Course.find({ domain: req.params.id });
+    console.log(`Found ${coursesToDelete.length} courses to delete for domain: ${domain.name}`);
+
+    if (coursesToDelete.length > 0) {
+      const deleteResult = await Course.deleteMany({ domain: req.params.id });
+      console.log(`Deleted ${deleteResult.deletedCount} courses for domain: ${domain.name}`);
+    }
+
+    // Delete the domain
     await domain.deleteOne();
-    res.json({ message: "Domain removed" });
+    console.log(`Domain "${domain.name}" deleted successfully`);
+
+    res.json({ 
+      message: `Domain "${domain.name}" and ${coursesToDelete.length} associated courses removed successfully`,
+      deletedCourses: coursesToDelete.length
+    });
   } catch (error) {
     console.error("Error deleting domain:", error);
     res.status(500).json({ message: "Server error" });

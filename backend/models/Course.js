@@ -32,7 +32,7 @@ const courseSchema = new mongoose.Schema({
   },
   affiliate_link: {
     type: String,
-    default: '#',
+    required: true,
   },
   rating: {
     type: Number,
@@ -71,6 +71,19 @@ const courseSchema = new mongoose.Schema({
     height:Number,
   },
   weight:Number,
+  // Revenue tracking fields
+  clicks: {
+    type: Number,
+    default: 0,
+  },
+  revenue: {
+    type: Number,
+    default: 0,
+  },
+  lastClicked: {
+    type: Date,
+    default: null,
+  },
 }, {
   timestamps: true, // adds createdAt and updatedAt fields
 });

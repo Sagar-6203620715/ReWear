@@ -1,21 +1,23 @@
-import React from 'react'
+import React from 'react';
 import Header from "../Common/Header";
 import Footer from '../Common/Footer';
-import { FiLayout } from 'react-icons/fi';
 import { Outlet } from 'react-router-dom';
-const userLayout = () => {
-  return (
-    <>
-      {/* header */}
-      <Header/>
-      {/* main content */}
-      <main>
-        <Outlet/>
-      </main>
-      {/* footer */}
-      <Footer/>
-    </>
-  )
-}
 
-export default userLayout
+const UserLayout = () => {
+  return (
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
+      <Header />
+      
+      {/* Main content */}
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      
+      {/* Footer */}
+      <Footer />
+    </div>
+  );
+};
+
+export default UserLayout;

@@ -1,11 +1,19 @@
 import React from 'react';
 import Topbar from '../Layout/Topbar';
 import Navbar from './Navbar';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../redux/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector(state => state.auth.user);
+  const isLoggedIn = !!user;
+
   const handleLogout = () => {
-    console.log("Logged out");
-    // You can also clear auth tokens or reset global state here
+    dispatch(logout());
+    navigate('/login');
   };
 
   return (
@@ -13,7 +21,7 @@ const Header = () => {
       {/* topbar */}
       <Topbar />
       {/* navbar */}
-      <Navbar isLoggedIn={true} handleLogout={handleLogout} />
+      <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
     </header>
   );
 };

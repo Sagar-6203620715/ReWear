@@ -8,7 +8,8 @@ const chatSchema = new mongoose.Schema({
     required: true,
   },
   user: {
-    type: String, // You can change to mongoose.Schema.Types.ObjectId if you use auth
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   message: {
