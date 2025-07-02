@@ -5,7 +5,7 @@ import Home from "./pages/Home"
 import { Toaster } from "sonner"
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Tech from './pages/tech';
+import Tech from './pages/Tech';
 import CompetitiveExams from './pages/CompetitiveExams';
 import Skills from './pages/Skills';
 import School from './pages/School';
