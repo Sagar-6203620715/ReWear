@@ -46,6 +46,7 @@
     "postcss": "^8.5.6",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.17",
+    "terser": "^5.43.1",
     "vite": "^6.3.5",
     "vite-bundle-analyzer": "^0.7.0",
     "vitest": "^2.1.8"
