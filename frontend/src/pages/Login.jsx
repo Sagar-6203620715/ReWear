@@ -76,7 +76,7 @@ const Login = () => {
             {message === 'login-to-view-course' && (
               <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-700 font-medium">
-                  Please login to view course details and access affiliate links.
+                  Please login to view course details.
                 </p>
               </div>
             )}
