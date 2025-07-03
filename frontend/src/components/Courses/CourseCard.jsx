@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
-import { FiExternalLink, FiClock, FiDollarSign } from 'react-icons/fi';
+import { FiExternalLink, FiClock, FiDollarSign, FiLock } from 'react-icons/fi';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const formatDuration = ({ years, months }) => {
@@ -12,10 +14,13 @@ const formatDuration = ({ years, months }) => {
 const CourseCard = ({ course, onSelect }) => {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useSelector(state => state.auth);
+  const navigate = useNavigate();
 
   // Debug: Log course data
   console.log('CourseCard - Full course object:', course);
   console.log('CourseCard - Affiliate link from course:', course.affiliate_link);
+  console.log('CourseCard - User logged in:', !!user);
 
   // Calculate stars
   const fullStars = Math.floor(course.rating);
@@ -24,6 +29,14 @@ const CourseCard = ({ course, onSelect }) => {
 
   const handleAffiliateClick = async (e) => {
     e.preventDefault();
+    
+    // Check if user is logged in
+    if (!user) {
+      console.log('CourseCard - User not logged in, redirecting to login');
+      navigate('/login');
+      return;
+    }
+    
     setIsLoading(true);
     
     console.log('CourseCard - Affiliate link:', course.affiliate_link);
@@ -106,6 +119,16 @@ const CourseCard = ({ course, onSelect }) => {
           </div>
         </div>
 
+        {/* Lock Badge for non-logged in users */}
+        {!user && (
+          <div className="absolute top-3 left-1/2 transform -translate-x-1/2">
+            <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center space-x-1">
+              <FiLock className="h-3 w-3" />
+              <span>Login Required</span>
+            </div>
+          </div>
+        )}
+
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <button
@@ -115,10 +138,14 @@ const CourseCard = ({ course, onSelect }) => {
           >
             {isLoading ? (
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-            ) : (
+            ) : user ? (
               <FiExternalLink className="h-4 w-4" />
+            ) : (
+              <FiLock className="h-4 w-4" />
             )}
-            <span>{isLoading ? 'Loading...' : 'View Course'}</span>
+            <span>
+              {isLoading ? 'Loading...' : user ? 'View Course' : 'Login to View'}
+            </span>
           </button>
         </div>
       </div>
@@ -165,12 +192,16 @@ const CourseCard = ({ course, onSelect }) => {
         <button
           onClick={(e) => {
             e.stopPropagation();
+            if (!user) {
+              navigate('/login');
+              return;
+            }
             onSelect(course);
           }}
           className="mt-auto w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
         >
           <FaStar className="h-4 w-4 text-yellow-500" />
-          <span>Rate this course</span>
+          <span>{user ? 'Rate this course' : 'Login to Rate'}</span>
         </button>
       </div>
     </div>
