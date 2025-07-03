@@ -161,6 +161,11 @@ router.post("/:id/click", async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
+    // Get user agent and referrer for analytics
+    const userAgent = req.headers['user-agent'];
+    const referrer = req.headers['referer'] || 'direct';
+    const ip = req.ip || req.connection.remoteAddress;
+
     // Increment clicks and revenue ($1 per click)
     course.clicks += 1;
     course.revenue += 1;
@@ -168,10 +173,14 @@ router.post("/:id/click", async (req, res) => {
     
     await course.save();
     
+    // Log analytics data
+    console.log(`Affiliate Click - Course: ${course.name}, Clicks: ${course.clicks}, Revenue: $${course.revenue}, IP: ${ip}, Referrer: ${referrer}`);
+    
     res.json({ 
       message: "Click tracked successfully",
       clicks: course.clicks,
-      revenue: course.revenue
+      revenue: course.revenue,
+      affiliateLink: course.affiliate_link
     });
   } catch (error) {
     console.error("Error tracking click:", error);
