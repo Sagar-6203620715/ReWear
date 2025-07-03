@@ -25,20 +25,28 @@ const DomainAllCourses = () => {
     const fetchDomainAndCourses = async () => {
       if (!domainId) return;
       
+      console.log('Fetching domain and courses for domainId:', domainId);
+      console.log('Backend URL:', import.meta.env.VITE_BACKEND_URL);
+      
       try {
         setLoading(true);
         setError(null);
         
         // Fetch domain details
+        console.log('Fetching domain details...');
         const domainRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/domains/${domainId}`);
+        console.log('Domain response:', domainRes.data);
         setDomain(domainRes.data);
         
         // Fetch all courses in the domain
+        console.log('Fetching courses...');
         const coursesRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domainId}`);
+        console.log('Courses response:', coursesRes.data);
         setCourses(coursesRes.data);
         setSortedCourses(coursesRes.data);
       } catch (error) {
         console.error("Error fetching domain and courses:", error);
+        console.error("Error response:", error.response);
         if (error.response?.status === 404) {
           setError('Domain not found. The domain may have been removed or the link is invalid.');
         } else {
