@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import login from "../assets/login.webp";
 import { loginUser } from '../redux/slices/authSlice';
@@ -13,7 +13,11 @@ const Login = () => {
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { loading, error, user } = useSelector(state => state.auth);
+  
+  // Get message from URL parameters
+  const message = searchParams.get('message');
 
   // Redirect if already logged in
   useEffect(() => {
@@ -67,6 +71,23 @@ const Login = () => {
             <p className="text-gray-600">
               Sign in to your account to continue
             </p>
+            
+            {/* Show message if redirected from course click */}
+            {message === 'login-to-view-course' && (
+              <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-blue-700 font-medium">
+                  Please login to view course details and access affiliate links.
+                </p>
+              </div>
+            )}
+            
+            {message === 'login-to-rate-course' && (
+              <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-blue-700 font-medium">
+                  Please login to rate courses and provide feedback.
+                </p>
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-gray-100">

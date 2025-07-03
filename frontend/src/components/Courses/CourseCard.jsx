@@ -33,7 +33,7 @@ const CourseCard = ({ course, onSelect }) => {
     // Check if user is logged in
     if (!user) {
       console.log('CourseCard - User not logged in, redirecting to login');
-      navigate('/login');
+      navigate('/login?message=login-to-view-course');
       return;
     }
     
@@ -119,15 +119,7 @@ const CourseCard = ({ course, onSelect }) => {
           </div>
         </div>
 
-        {/* Lock Badge for non-logged in users */}
-        {!user && (
-          <div className="absolute top-3 left-1/2 transform -translate-x-1/2">
-            <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center space-x-1">
-              <FiLock className="h-3 w-3" />
-              <span>Login Required</span>
-            </div>
-          </div>
-        )}
+
 
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -138,14 +130,10 @@ const CourseCard = ({ course, onSelect }) => {
           >
             {isLoading ? (
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-            ) : user ? (
-              <FiExternalLink className="h-4 w-4" />
             ) : (
-              <FiLock className="h-4 w-4" />
+              <FiExternalLink className="h-4 w-4" />
             )}
-            <span>
-              {isLoading ? 'Loading...' : user ? 'View Course' : 'Login to View'}
-            </span>
+            <span>{isLoading ? 'Loading...' : 'View Course'}</span>
           </button>
         </div>
       </div>
@@ -193,7 +181,7 @@ const CourseCard = ({ course, onSelect }) => {
           onClick={(e) => {
             e.stopPropagation();
             if (!user) {
-              navigate('/login');
+              navigate('/login?message=login-to-rate-course');
               return;
             }
             onSelect(course);
@@ -201,7 +189,7 @@ const CourseCard = ({ course, onSelect }) => {
           className="mt-auto w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
         >
           <FaStar className="h-4 w-4 text-yellow-500" />
-          <span>{user ? 'Rate this course' : 'Login to Rate'}</span>
+          <span>Rate this course</span>
         </button>
       </div>
     </div>
