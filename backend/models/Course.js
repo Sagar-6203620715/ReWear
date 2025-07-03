@@ -88,4 +88,11 @@ const courseSchema = new mongoose.Schema({
   timestamps: true, // adds createdAt and updatedAt fields
 });
 
+// Add indexes for better performance
+courseSchema.index({ domain: 1, section: 1 });
+courseSchema.index({ rating: -1 });
+courseSchema.index({ price: 1 });
+courseSchema.index({ createdAt: -1 });
+courseSchema.index({ name: 'text', metaTitle: 'text', metaKeywords: 'text' });
+
 module.exports = mongoose.model('Course', courseSchema);

@@ -26,8 +26,10 @@ const DomainCourses = ({ domain }) => {
         setLoading(true);
         setError(null);
         const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domain._id}`);
-        setCourses(res.data);
-        setSortedCourses(res.data);
+        // Handle both old array format and new paginated format
+        const coursesData = Array.isArray(res.data) ? res.data : res.data.courses || [];
+        setCourses(coursesData);
+        setSortedCourses(coursesData);
       } catch (error) {
         console.error("Error fetching courses:", error);
         setError('Failed to load courses. Please try again later.');
@@ -47,7 +49,9 @@ const DomainCourses = ({ domain }) => {
     try {
       setLoading(true);
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domain._id}&sortBy=${type}`);
-      setSortedCourses(res.data);
+      // Handle both old array format and new paginated format
+      const coursesData = Array.isArray(res.data) ? res.data : res.data.courses || [];
+      setSortedCourses(coursesData);
       setIsFilterOpen(false);
     } catch (error) {
       console.error("Failed to sort courses", error);

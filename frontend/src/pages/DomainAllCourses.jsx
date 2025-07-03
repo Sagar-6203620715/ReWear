@@ -52,8 +52,10 @@ const DomainAllCourses = () => {
           }
         });
         console.log('Courses response:', coursesRes.data);
-        setCourses(coursesRes.data);
-        setSortedCourses(coursesRes.data);
+        // Handle both old array format and new paginated format
+        const coursesData = Array.isArray(coursesRes.data) ? coursesRes.data : coursesRes.data.courses || [];
+        setCourses(coursesData);
+        setSortedCourses(coursesData);
       } catch (error) {
         console.error("Error fetching domain and courses:", error);
         console.error("Error response:", error.response);
@@ -81,7 +83,9 @@ const DomainAllCourses = () => {
           'Content-Type': 'application/json',
         }
       });
-      setSortedCourses(res.data);
+      // Handle both old array format and new paginated format
+      const coursesData = Array.isArray(res.data) ? res.data : res.data.courses || [];
+      setSortedCourses(coursesData);
       setIsFilterOpen(false);
     } catch (error) {
       console.error("Failed to sort courses", error);
@@ -200,13 +204,14 @@ const DomainAllCourses = () => {
             <p className="text-gray-600">Check back later for new courses in this domain.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {sortedCourses.map((course) => (
-              <CourseCard
-                key={course._id}
-                course={course}
-                onSelect={setSelectedCourse}
-              />
+              <div key={course._id} className="w-full">
+                <CourseCard
+                  course={course}
+                  onSelect={setSelectedCourse}
+                />
+              </div>
             ))}
           </div>
         )}

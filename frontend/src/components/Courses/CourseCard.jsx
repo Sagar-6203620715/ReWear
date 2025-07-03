@@ -45,7 +45,7 @@ const CourseCard = ({ course, onSelect }) => {
   const defaultImage = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop";
 
   return (
-    <div className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1">
+    <div className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1 h-full flex flex-col">
       {/* Course Image */}
       <div className="relative h-48 sm:h-56 overflow-hidden">
         <img
@@ -106,7 +106,7 @@ const CourseCard = ({ course, onSelect }) => {
       </div>
 
       {/* Course Info */}
-      <div className="p-4">
+      <div className="p-4 flex-1 flex flex-col">
         <h3 className="font-semibold text-gray-900 text-lg mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
           {course.name}
         </h3>
@@ -149,7 +149,7 @@ const CourseCard = ({ course, onSelect }) => {
             e.stopPropagation();
             onSelect(course);
           }}
-          className="mt-4 w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
+          className="mt-auto w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
         >
           <FaStar className="h-4 w-4 text-yellow-500" />
           <span>Rate this course</span>

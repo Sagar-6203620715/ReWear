@@ -9,7 +9,8 @@ const router = express.Router();
 // Get all courses - MUST BE FIRST
 router.get("/", async (req, res) => {
   try {
-    const { search, sortBy, domain } = req.query;
+    const { search, sortBy, domain, page = 1, limit = 20 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     let query = {};
     let sort = {};
 
@@ -128,10 +129,24 @@ router.get("/", async (req, res) => {
       // Regular query for non-search cases
       courses = await Course.find(query)
         .sort(sort)
-        .populate("domain section user", "name");
+        .populate("domain section user", "name")
+        .skip(skip)
+        .limit(parseInt(limit));
     }
 
-    res.json(courses);
+    // Get total count for pagination
+    const totalCount = await Course.countDocuments(query);
+    
+    res.json({
+      courses,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalCount / parseInt(limit)),
+        totalCourses: totalCount,
+        hasNextPage: skip + courses.length < totalCount,
+        hasPrevPage: parseInt(page) > 1
+      }
+    });
   } catch (error) {
     console.error("Error fetching courses:", error);
     res.status(500).send("Server error");
