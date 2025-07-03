@@ -212,13 +212,9 @@ const DomainAllCourses = () => {
             <p className="text-gray-600">Check back later for new courses in this domain.</p>
           </div>
         ) : (
-          <div className="flex space-x-4 sm:space-x-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
-               style={{
-                 scrollbarWidth: 'none',
-                 msOverflowStyle: 'none'
-               }}>
+          <div className="flex flex-wrap justify-center gap-6">
             {sortedCourses.map((course) => (
-              <div key={course._id} className="flex-shrink-0 w-80 sm:w-96">
+              <div key={course._id} className="w-80 sm:w-96">
                 <CourseCard
                   course={course}
                   onSelect={setSelectedCourse}
@@ -227,13 +223,6 @@ const DomainAllCourses = () => {
             ))}
           </div>
         )}
-        
-        {/* Hide scrollbar for webkit browsers */}
-        <style jsx>{`
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-        `}</style>
       </div>
 
       {/* Modals and Drawers */}
