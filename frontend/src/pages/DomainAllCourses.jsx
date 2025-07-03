@@ -212,19 +212,28 @@ const DomainAllCourses = () => {
             <p className="text-gray-600">Check back later for new courses in this domain.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          <div className="flex space-x-4 sm:space-x-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+               style={{
+                 scrollbarWidth: 'none',
+                 msOverflowStyle: 'none'
+               }}>
             {sortedCourses.map((course) => (
-              <div key={course._id} className="flex justify-center w-full">
-                <div className="w-full max-w-sm">
-                  <CourseCard
-                    course={course}
-                    onSelect={setSelectedCourse}
-                  />
-                </div>
+              <div key={course._id} className="flex-shrink-0 w-80 sm:w-96">
+                <CourseCard
+                  course={course}
+                  onSelect={setSelectedCourse}
+                />
               </div>
             ))}
           </div>
         )}
+        
+        {/* Hide scrollbar for webkit browsers */}
+        <style jsx>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
       </div>
 
       {/* Modals and Drawers */}
