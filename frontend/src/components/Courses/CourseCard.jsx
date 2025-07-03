@@ -54,6 +54,15 @@ const CourseCard = ({ course, onSelect }) => {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           onError={handleImageError}
           loading="lazy"
+          decoding="async"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          onLoad={(e) => {
+            // Optimize image loading
+            if (e.target.complete) {
+              e.target.style.opacity = '1';
+            }
+          }}
+          style={{ opacity: 0, transition: 'opacity 0.3s ease-in-out' }}
         />
         
         {/* Rating Badge */}
