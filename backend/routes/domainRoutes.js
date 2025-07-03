@@ -53,8 +53,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-
-
 // @route GET /api/domains/search?query=web
 // @desc Search domains by name
 router.get("/search", async (req, res) => {
@@ -72,6 +70,23 @@ router.get("/search", async (req, res) => {
     res.json(matchedDomains);
   } catch (error) {
     console.error("Error searching domains:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// @route   GET /api/domains/:id
+// @desc    Get a single domain by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const domain = await Domain.findById(req.params.id).populate("section", "name");
+    
+    if (!domain) {
+      return res.status(404).json({ message: "Domain not found" });
+    }
+    
+    res.json(domain);
+  } catch (error) {
+    console.error("Error fetching domain:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
