@@ -20,8 +20,10 @@ const CourseList = ({ courses, scrollRef, onSelect }) => {
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto"
       >
         {courses.map((course) => (
-          <div key={course._id} className="flex justify-center">
-            <CourseCard course={course} onSelect={onSelect} />
+          <div key={course._id} className="flex justify-center w-full">
+            <div className="w-full max-w-sm">
+              <CourseCard course={course} onSelect={onSelect} />
+            </div>
           </div>
         ))}
       </div>

@@ -22,12 +22,17 @@ const DomainCourses = ({ domain }) => {
     const fetchCourses = async () => {
       if (!domain?._id) return;
       
+      console.log('DomainCourses - Domain received:', domain);
+      console.log('DomainCourses - Domain ID:', domain._id);
+      console.log('DomainCourses - Domain Name:', domain.name);
+      
       try {
         setLoading(true);
         setError(null);
         const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domain._id}`);
         // Handle both old array format and new paginated format
         const coursesData = Array.isArray(res.data) ? res.data : res.data.courses || [];
+        console.log('DomainCourses - Courses fetched:', coursesData.length);
         setCourses(coursesData);
         setSortedCourses(coursesData);
       } catch (error) {
@@ -99,11 +104,11 @@ const DomainCourses = ({ domain }) => {
               </div>
             </>
           )}
-          {/* Course List */}
+          {/* Course List - Show only first 3 courses on home page */}
           {!loading && !error && courses.length > 0 && (
             <>
               <CourseList 
-                courses={sortedCourses} 
+                courses={sortedCourses.slice(0, 3)} 
                 scrollRef={scrollRef} 
                 onSelect={setSelectedCourse} 
               />

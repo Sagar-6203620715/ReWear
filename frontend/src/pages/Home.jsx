@@ -85,9 +85,17 @@ const DynamicDomains = ({ sectionName }) => {
       try {
         setIsLoading(true);
         setError(null);
+        console.log('Home - Fetching domains for section:', sectionName);
         const res = await dispatch(fetchDomainsBySection(sectionName));
+        console.log('Home - Domains response:', res.payload);
         if (res.payload && res.payload.length > 0) {
-          setFirstDomain(res.payload[0]);
+          const domain = res.payload[0];
+          console.log('Home - Selected domain:', domain);
+          console.log('Home - Domain ID:', domain._id);
+          console.log('Home - Domain Name:', domain.name);
+          setFirstDomain(domain);
+        } else {
+          console.log('Home - No domains found for section:', sectionName);
         }
       } catch (err) {
         setError('Failed to load domains');

@@ -6,6 +6,24 @@ const ViewAllButton = ({ domainId, domainName, courseCount }) => {
   const navigate = useNavigate();
 
   const handleViewAll = () => {
+    // Validate domain ID
+    if (!domainId || typeof domainId !== 'string') {
+      console.error('ViewAllButton - Invalid domain ID:', domainId);
+      alert('Invalid domain ID. Please try again.');
+      return;
+    }
+
+    // Check if domain ID looks like a valid MongoDB ObjectId
+    if (!domainId.match(/^[0-9a-fA-F]{24}$/)) {
+      console.error('ViewAllButton - Domain ID is not a valid MongoDB ObjectId:', domainId);
+      alert('Invalid domain ID format. Please try again.');
+      return;
+    }
+
+    console.log('ViewAllButton - Domain ID:', domainId);
+    console.log('ViewAllButton - Domain Name:', domainName);
+    console.log('ViewAllButton - Generated URL:', `/domain/${domainId}/courses`);
+    
     navigate(`/domain/${domainId}/courses`);
   };
 

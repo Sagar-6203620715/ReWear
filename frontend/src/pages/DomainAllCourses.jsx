@@ -25,8 +25,16 @@ const DomainAllCourses = () => {
     const fetchDomainAndCourses = async () => {
       if (!domainId) return;
       
-      console.log('Fetching domain and courses for domainId:', domainId);
-      console.log('Backend URL:', import.meta.env.VITE_BACKEND_URL);
+      console.log('DomainAllCourses - Domain ID from URL:', domainId);
+      console.log('DomainAllCourses - Backend URL:', import.meta.env.VITE_BACKEND_URL);
+      
+      // Validate domain ID format
+      if (!domainId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.error('DomainAllCourses - Invalid domain ID format:', domainId);
+        setError('Invalid domain ID format. Please check the URL.');
+        setLoading(false);
+        return;
+      }
       
       try {
         setLoading(true);
@@ -206,11 +214,13 @@ const DomainAllCourses = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {sortedCourses.map((course) => (
-              <div key={course._id} className="flex justify-center">
-                <CourseCard
-                  course={course}
-                  onSelect={setSelectedCourse}
-                />
+              <div key={course._id} className="flex justify-center w-full">
+                <div className="w-full max-w-sm">
+                  <CourseCard
+                    course={course}
+                    onSelect={setSelectedCourse}
+                  />
+                </div>
               </div>
             ))}
           </div>
