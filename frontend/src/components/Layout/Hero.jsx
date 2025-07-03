@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
@@ -36,6 +36,8 @@ const slides = [
 ];
 
 const Hero = () => {
+  const swiperRef = useRef(null);
+
   const handleFindNow = () => {
     // Dispatch event to open search bar
     window.dispatchEvent(new Event("activateSearch"));
@@ -43,10 +45,37 @@ const Hero = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handlePrevSlide = () => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slidePrev();
+    }
+  };
+
+  const handleNextSlide = () => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slideNext();
+    }
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') {
+        handlePrevSlide();
+      } else if (e.key === 'ArrowRight') {
+        handleNextSlide();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <section className="relative w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[750px] overflow-hidden">
       {/* Background Image Slider */}
       <Swiper
+        ref={swiperRef}
         spaceBetween={0}
         centeredSlides={true}
         autoplay={{
@@ -82,8 +111,25 @@ const Hero = () => {
       </Swiper>
 
       {/* Custom Navigation Buttons */}
-      <div className="swiper-button-prev !text-white !w-12 !h-12 !bg-black/20 !rounded-full !backdrop-blur-sm hover:!bg-black/40 transition-all duration-200"></div>
-      <div className="swiper-button-next !text-white !w-12 !h-12 !bg-black/20 !rounded-full !backdrop-blur-sm hover:!bg-black/40 transition-all duration-200"></div>
+      <button
+        onClick={handlePrevSlide}
+        className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 z-20 text-white w-10 h-10 sm:w-12 sm:h-12 bg-black/20 rounded-full backdrop-blur-sm hover:bg-black/40 transition-all duration-200 flex items-center justify-center"
+        aria-label="Previous slide"
+      >
+        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <button
+        onClick={handleNextSlide}
+        className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 z-20 text-white w-10 h-10 sm:w-12 sm:h-12 bg-black/20 rounded-full backdrop-blur-sm hover:bg-black/40 transition-all duration-200 flex items-center justify-center"
+        aria-label="Next slide"
+      >
+        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
       
       {/* Custom Pagination */}
       <div className="swiper-pagination !bottom-6"></div>
