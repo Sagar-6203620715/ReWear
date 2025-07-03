@@ -4,7 +4,7 @@ import RatingForm from '../Layout/RatingForm';
 import ChatDrawer from '../Layout/ChatDrawer';
 import Filter from '../Layout/Filter';
 import HeaderActions from './HeaderActions';
-import ScrollButtons from './ScrollButtons';
+import ViewAllButton from './ViewAllButton';
 import CourseList from './CourseList';
 
 const DomainCourses = ({ domain }) => {
@@ -17,8 +17,6 @@ const DomainCourses = ({ domain }) => {
   const [error, setError] = useState(null);
 
   const scrollRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -41,28 +39,7 @@ const DomainCourses = ({ domain }) => {
     fetchCourses();
   }, [domain?._id]);
 
-  const updateScrollButtons = () => {
-    const container = scrollRef.current;
-    if (!container) return;
-    
-    const { scrollLeft, scrollWidth, clientWidth } = container;
-    setCanScrollLeft(scrollLeft > 0);
-    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
-  };
 
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-    
-    updateScrollButtons();
-    container.addEventListener('scroll', updateScrollButtons);
-    window.addEventListener('resize', updateScrollButtons);
-    
-    return () => {
-      container.removeEventListener('scroll', updateScrollButtons);
-      window.removeEventListener('resize', updateScrollButtons);
-    };
-  }, [courses]);
 
   const handleSort = async (type) => {
     if (!domain?._id) return;
@@ -80,17 +57,7 @@ const DomainCourses = ({ domain }) => {
     }
   };
 
-  const handleScrollLeft = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -400, behavior: 'smooth' });
-    }
-  };
 
-  const handleScrollRight = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 400, behavior: 'smooth' });
-    }
-  };
 
   if (!domain) {
     return (
@@ -114,37 +81,37 @@ const DomainCourses = ({ domain }) => {
           />
         </div>
 
-        {/* Course List with floating scroll buttons */}
+        {/* Course List with View All button */}
         <div className="relative">
           {!loading && courses.length > 0 && (
             <>
-              {/* Left Scroll Button */}
-              <div className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 z-40">
-                <ScrollButtons
-                  canScrollLeft={canScrollLeft}
-                  canScrollRight={false}
-                  scrollLeft={handleScrollLeft}
-                  scrollRight={() => {}}
-                />
-              </div>
-              {/* Right Scroll Button */}
+              {/* View All Button */}
               <div className="hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 z-40">
-                <ScrollButtons
-                  canScrollLeft={false}
-                  canScrollRight={canScrollRight}
-                  scrollLeft={() => {}}
-                  scrollRight={handleScrollRight}
+                <ViewAllButton
+                  domainId={domain._id}
+                  domainName={domain.name}
+                  courseCount={courses.length}
                 />
               </div>
             </>
           )}
           {/* Course List */}
           {!loading && !error && courses.length > 0 && (
-            <CourseList 
-              courses={sortedCourses} 
-              scrollRef={scrollRef} 
-              onSelect={setSelectedCourse} 
-            />
+            <>
+              <CourseList 
+                courses={sortedCourses} 
+                scrollRef={scrollRef} 
+                onSelect={setSelectedCourse} 
+              />
+              {/* Mobile View All Button */}
+              <div className="sm:hidden mt-6 text-center">
+                <ViewAllButton
+                  domainId={domain._id}
+                  domainName={domain.name}
+                  courseCount={courses.length}
+                />
+              </div>
+            </>
           )}
         </div>
 

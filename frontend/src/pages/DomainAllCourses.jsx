@@ -34,13 +34,23 @@ const DomainAllCourses = () => {
         
         // Fetch domain details
         console.log('Fetching domain details...');
-        const domainRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/domains/${domainId}`);
+        const domainRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/domains/${domainId}`, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
         console.log('Domain response:', domainRes.data);
         setDomain(domainRes.data);
         
         // Fetch all courses in the domain
         console.log('Fetching courses...');
-        const coursesRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domainId}`);
+        const coursesRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domainId}`, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
         console.log('Courses response:', coursesRes.data);
         setCourses(coursesRes.data);
         setSortedCourses(coursesRes.data);
@@ -65,7 +75,12 @@ const DomainAllCourses = () => {
     
     try {
       setLoading(true);
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domainId}&sortBy=${type}`);
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?domain=${domainId}&sortBy=${type}`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       setSortedCourses(res.data);
       setIsFilterOpen(false);
     } catch (error) {
@@ -78,7 +93,12 @@ const DomainAllCourses = () => {
 
   const refreshCourseData = async (courseId) => {
     try {
-      const courseRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses/${courseId}`);
+      const courseRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses/${courseId}`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       const updatedCourse = courseRes.data;
       setCourses((prev) => {
         return prev.map(c => c._id === updatedCourse._id ? updatedCourse : c);

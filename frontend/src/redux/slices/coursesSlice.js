@@ -6,11 +6,26 @@ export const fetchCoursesByFilters=createAsyncThunk(
   async({
     sortBy,
   })=>{
-    const query =new URLSearchParams();
-    if(sortBy) query.append("sortBy",sortBy);
+    console.log('Fetching courses with filters:', { sortBy });
+    console.log('Backend URL:', import.meta.env.VITE_BACKEND_URL);
+    
+    try {
+      const query =new URLSearchParams();
+      if(sortBy) query.append("sortBy",sortBy);
 
-    const response=await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?${query.toString()}`);
-    return response.data;
+      const response=await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/courses?${query.toString()}`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      console.log('Courses response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      console.error('Error response:', error.response);
+      throw error;
+    }
   }
 );
 

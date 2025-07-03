@@ -6,10 +6,26 @@ import axios from "axios";
 export const fetchDomainsBySection = createAsyncThunk(
   "domains/fetchBySection",
   async (sectionName) => {
-    const response = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/api/domains?section=${sectionName}`
-    );
-    return response.data; // Assumes backend returns [{ name: "Web Dev" }, { name: "DSA" }]
+    console.log('Fetching domains for section:', sectionName);
+    console.log('Backend URL:', import.meta.env.VITE_BACKEND_URL);
+    
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/domains?section=${sectionName}`,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+      console.log('Domains response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching domains:', error);
+      console.error('Error response:', error.response);
+      throw error;
+    }
   }
 );
 

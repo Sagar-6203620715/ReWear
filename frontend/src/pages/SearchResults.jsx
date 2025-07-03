@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import CourseList from '../components/Courses/CourseList';
 import RatingForm from '../components/Layout/RatingForm';
-import ScrollButtons from '../components/Courses/ScrollButtons';
+import ViewAllButton from '../components/Courses/ViewAllButton';
 import HeaderActions from '../components/Courses/HeaderActions';
 import ChatDrawer from '../components/Layout/ChatDrawer';
 import Filter from '../components/Layout/Filter';
@@ -19,8 +19,6 @@ const SearchResults = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const scrollRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,20 +61,7 @@ const SearchResults = () => {
     if (query) fetchData();
   }, [query]);
 
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
 
-    const updateScrollButtons = () => {
-      const { scrollLeft, scrollWidth, clientWidth } = container;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
-    };
-
-    updateScrollButtons();
-    container.addEventListener('scroll', updateScrollButtons);
-    return () => container.removeEventListener('scroll', updateScrollButtons);
-  }, [domainCourses]);
 
   const handleSort = async (type) => {
     try {
@@ -155,12 +140,13 @@ const SearchResults = () => {
           domainId={searchedCourse?.domain?._id}
         />
 
-        <ScrollButtons
-          canScrollLeft={canScrollLeft}
-          canScrollRight={canScrollRight}
-          scrollLeft={() => scrollRef.current.scrollBy({ left: -500, behavior: 'smooth' })}
-          scrollRight={() => scrollRef.current.scrollBy({ left: 500, behavior: 'smooth' })}
-        />
+        {domainCourses.length > 0 && searchedCourse?.domain?._id && (
+          <ViewAllButton
+            domainId={searchedCourse.domain._id}
+            domainName={searchedCourse.domain.name}
+            courseCount={domainCourses.length}
+          />
+        )}
       </div>
 
       {domainCourses.length === 0 ? (
@@ -169,11 +155,23 @@ const SearchResults = () => {
           <p className="text-gray-500 text-sm">Try searching for a different course, domain, or skill</p>
         </div>
       ) : (
-        <CourseList
-          courses={domainCourses}
-          scrollRef={scrollRef}
-          onSelect={setSelectedCourse}
-        />
+        <>
+          <CourseList
+            courses={domainCourses}
+            scrollRef={scrollRef}
+            onSelect={setSelectedCourse}
+          />
+          {/* Mobile View All Button */}
+          {searchedCourse?.domain?._id && (
+            <div className="sm:hidden mt-6 text-center">
+              <ViewAllButton
+                domainId={searchedCourse.domain._id}
+                domainName={searchedCourse.domain.name}
+                courseCount={domainCourses.length}
+              />
+            </div>
+          )}
+        </>
       )}
 
       {selectedCourse && (

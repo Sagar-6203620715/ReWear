@@ -13,6 +13,7 @@ import NotFound from './pages/NotFound';
 import AdminLayout from './components/Admin/AdminLayout';
 import AdminHomePage from './pages/AdminHomePage';
 import SearchResults from './pages/SearchResults';
+import DomainAllCourses from './pages/DomainAllCourses';
 import UserManagement from './components/Admin/UserManagement';
 import CourseManagement from './components/Admin/CourseManagement';
 import EditCoursePage from './components/Admin/EditCoursePage';
@@ -93,6 +94,7 @@ const App = () => {
               <Route path="/skills" element={<Skills />} />
               <Route path="/school" element={<School />} />
               <Route path="/search" element={<SearchResults />} />
+              <Route path="/domain/:domainId/courses" element={<DomainAllCourses />} />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/not-authorized" element={<NotAuthorized />} />
