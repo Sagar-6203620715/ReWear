@@ -13,6 +13,10 @@ const CourseCard = ({ course, onSelect }) => {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Debug: Log course data
+  console.log('CourseCard - Full course object:', course);
+  console.log('CourseCard - Affiliate link from course:', course.affiliate_link);
+
   // Calculate stars
   const fullStars = Math.floor(course.rating);
   const hasHalfStar = course.rating - fullStars >= 0.5;
@@ -22,17 +26,31 @@ const CourseCard = ({ course, onSelect }) => {
     e.preventDefault();
     setIsLoading(true);
     
+    console.log('CourseCard - Affiliate link:', course.affiliate_link);
+    console.log('CourseCard - Course ID:', course._id);
+    
     try {
       // Track the click in the backend
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/courses/${course._id}/click`);
       console.log('Affiliate click tracked successfully');
       
+      // Ensure the affiliate link is properly formatted
+      let affiliateUrl = course.affiliate_link;
+      if (affiliateUrl && !affiliateUrl.startsWith('http://') && !affiliateUrl.startsWith('https://')) {
+        affiliateUrl = 'https://' + affiliateUrl;
+        console.log('CourseCard - Normalized affiliate URL:', affiliateUrl);
+      }
+      
       // Open affiliate link in new tab
-      window.open(course.affiliate_link, '_blank', 'noopener,noreferrer');
+      window.open(affiliateUrl, '_blank', 'noopener,noreferrer');
     } catch (error) {
       console.error('Failed to track affiliate click:', error);
       // Still open the affiliate link even if tracking fails
-      window.open(course.affiliate_link, '_blank', 'noopener,noreferrer');
+      let affiliateUrl = course.affiliate_link;
+      if (affiliateUrl && !affiliateUrl.startsWith('http://') && !affiliateUrl.startsWith('https://')) {
+        affiliateUrl = 'https://' + affiliateUrl;
+      }
+      window.open(affiliateUrl, '_blank', 'noopener,noreferrer');
     } finally {
       setIsLoading(false);
     }
