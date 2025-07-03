@@ -97,14 +97,19 @@ const EditCoursePage = () => {
       alert('Please fill in all required fields: Name, Price, Domain, and Section');
       return;
     }
-
-    console.log('Submitting course data:', courseData);
+    // Validate affiliate link
+    let affiliateLink = courseData.affiliate_link.trim();
+    if (affiliateLink && !/^https?:\/\//i.test(affiliateLink)) {
+      affiliateLink = 'https://' + affiliateLink;
+    }
+    const submitData = { ...courseData, affiliate_link: affiliateLink };
+    console.log('Submitting course data:', submitData);
 
     try {
       if (isEdit) {
-        await dispatch(updateCourse({ id, courseData })).unwrap();
+        await dispatch(updateCourse({ id, courseData: submitData })).unwrap();
       } else {
-        await dispatch(createCourse(courseData)).unwrap();
+        await dispatch(createCourse(submitData)).unwrap();
       }
       navigate('/admin/courses');
     } catch (error) {

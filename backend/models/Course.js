@@ -90,9 +90,12 @@ const courseSchema = new mongoose.Schema({
 
 // Add indexes for better performance
 courseSchema.index({ domain: 1, section: 1 });
+courseSchema.index({ name: 1 });
 courseSchema.index({ rating: -1 });
 courseSchema.index({ price: 1 });
 courseSchema.index({ createdAt: -1 });
+courseSchema.index({ clicks: -1 });
+courseSchema.index({ revenue: -1 });
 courseSchema.index({ name: 'text', metaTitle: 'text', metaKeywords: 'text' });
 
 module.exports = mongoose.model('Course', courseSchema);

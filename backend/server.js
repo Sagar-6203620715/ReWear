@@ -40,6 +40,12 @@ const corsOptions = {
       allowedOrigins.push(process.env.FRONTEND_URL);
     }
     
+    // Add any additional frontend URLs from environment
+    if (process.env.ADDITIONAL_FRONTEND_URLS) {
+      const additionalUrls = process.env.ADDITIONAL_FRONTEND_URLS.split(',').map(url => url.trim());
+      allowedOrigins.push(...additionalUrls);
+    }
+    
     console.log('CORS check - Origin:', origin);
     console.log('CORS check - Allowed origins:', allowedOrigins);
     
@@ -48,12 +54,19 @@ const corsOptions = {
       callback(null, true);
     } else {
       console.log('CORS blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
+      // In production, be more strict; in development, be more lenient
+      if (process.env.NODE_ENV === 'production') {
+        callback(new Error('Not allowed by CORS'));
+      } else {
+        console.log('CORS: Allowing origin in development mode');
+        callback(null, true);
+      }
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'Origin', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Length', 'X-Requested-With']
 };
 
 app.use(cors(corsOptions));
@@ -99,16 +112,29 @@ app.get("/", (req, res) => {
 });
 
 const server = http.createServer(app);
+// Socket.IO CORS configuration
+const socketCorsOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173', 
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:5173',
+  'https://course-comparator.netlify.app',
+  'https://your-frontend-domain.netlify.app'
+];
+
+// Add environment variables to Socket.IO CORS
+if (process.env.FRONTEND_URL) {
+  socketCorsOrigins.push(process.env.FRONTEND_URL);
+}
+
+if (process.env.ADDITIONAL_FRONTEND_URLS) {
+  const additionalUrls = process.env.ADDITIONAL_FRONTEND_URLS.split(',').map(url => url.trim());
+  socketCorsOrigins.push(...additionalUrls);
+}
+
 const io = new Server(server, {
   cors: {
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:5173', 
-      'http://127.0.0.1:3000',
-      'http://127.0.0.1:5173',
-      'https://course-comparator.netlify.app',
-      'https://your-frontend-domain.netlify.app'
-    ],
+    origin: socketCorsOrigins,
     methods: ['GET', 'POST'],
     credentials: true
   }

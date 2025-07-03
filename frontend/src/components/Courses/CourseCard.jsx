@@ -45,7 +45,7 @@ const CourseCard = ({ course, onSelect }) => {
   const defaultImage = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop";
 
   return (
-    <div className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1 h-full flex flex-col">
+    <div className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1 h-full flex flex-col w-full max-w-sm">
       {/* Course Image */}
       <div className="relative h-48 sm:h-56 overflow-hidden">
         <img

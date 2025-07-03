@@ -45,6 +45,8 @@ export const useOptimizedCourses = (domainId = null, filters = {}) => {
         params.append('domain', domainId);
       }
 
+      console.log('Making API request to:', `${import.meta.env.VITE_BACKEND_URL}/api/courses?${params.toString()}`);
+      
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/courses?${params.toString()}`,
         {
@@ -55,8 +57,38 @@ export const useOptimizedCourses = (domainId = null, filters = {}) => {
           }
         }
       );
+      
+      console.log('API response received:', response.data);
 
-      const { courses: newCourses, pagination: newPagination } = response.data;
+      // Handle both array and paginated response formats
+      let newCourses, newPagination;
+      
+      if (Array.isArray(response.data)) {
+        // Direct array response (fallback)
+        newCourses = response.data;
+        newPagination = {
+          currentPage: 1,
+          totalPages: 1,
+          totalCourses: response.data.length,
+          hasNextPage: false,
+          hasPrevPage: false
+        };
+      } else {
+        // Paginated response
+        newCourses = response.data.courses || [];
+        newPagination = response.data.pagination || {
+          currentPage: 1,
+          totalPages: 1,
+          totalCourses: newCourses.length,
+          hasNextPage: false,
+          hasPrevPage: false
+        };
+      }
+
+      console.log('Frontend received:', {
+        coursesCount: newCourses.length,
+        pagination: newPagination
+      });
 
       if (append) {
         setCourses(prev => [...prev, ...newCourses]);
@@ -64,7 +96,7 @@ export const useOptimizedCourses = (domainId = null, filters = {}) => {
         setCourses(newCourses);
         // Cache first page
         courseCache.set(cacheKey, {
-          data: response.data,
+          data: { courses: newCourses, pagination: newPagination },
           timestamp: Date.now()
         });
       }
@@ -75,7 +107,18 @@ export const useOptimizedCourses = (domainId = null, filters = {}) => {
     } catch (error) {
       if (error.name !== 'AbortError') {
         console.error('Error fetching courses:', error);
-        setError('Failed to load courses. Please try again.');
+        
+        if (error.code === 'ERR_NETWORK') {
+          setError('Network error. Please check your connection and try again.');
+        } else if (error.response?.status === 0) {
+          setError('CORS error. Please check if the backend is running and accessible.');
+        } else if (error.response?.status === 404) {
+          setError('Courses not found. Please try a different search.');
+        } else if (error.response?.status >= 500) {
+          setError('Server error. Please try again later.');
+        } else {
+          setError('Failed to load courses. Please try again.');
+        }
       }
     } finally {
       setLoading(false);

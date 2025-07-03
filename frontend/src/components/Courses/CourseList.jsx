@@ -17,25 +17,14 @@ const CourseList = ({ courses, scrollRef, onSelect }) => {
     <div className="container mx-auto px-4">
       <div
         ref={scrollRef}
-        className="flex space-x-4 sm:space-x-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
-        style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none'
-        }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto"
       >
         {courses.map((course) => (
-          <div key={course._id} className="flex-shrink-0 w-80 sm:w-96">
+          <div key={course._id} className="flex justify-center">
             <CourseCard course={course} onSelect={onSelect} />
           </div>
         ))}
       </div>
-      
-      {/* Hide scrollbar for webkit browsers */}
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </div>
   );
 };

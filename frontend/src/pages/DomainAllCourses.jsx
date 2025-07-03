@@ -204,9 +204,9 @@ const DomainAllCourses = () => {
             <p className="text-gray-600">Check back later for new courses in this domain.</p>
           </div>
         ) : (
-          <div className="flex flex-wrap justify-center gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {sortedCourses.map((course) => (
-              <div key={course._id} className="w-80 sm:w-96 flex-shrink-0">
+              <div key={course._id} className="flex justify-center">
                 <CourseCard
                   course={course}
                   onSelect={setSelectedCourse}

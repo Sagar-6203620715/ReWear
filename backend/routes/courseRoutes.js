@@ -137,16 +137,26 @@ router.get("/", async (req, res) => {
     // Get total count for pagination
     const totalCount = await Course.countDocuments(query);
     
-    res.json({
-      courses,
+    // Ensure we have a valid response structure
+    const response = {
+      courses: courses || [],
       pagination: {
         currentPage: parseInt(page),
         totalPages: Math.ceil(totalCount / parseInt(limit)),
         totalCourses: totalCount,
-        hasNextPage: skip + courses.length < totalCount,
+        hasNextPage: skip + (courses ? courses.length : 0) < totalCount,
         hasPrevPage: parseInt(page) > 1
       }
+    };
+    
+    console.log('API Response:', {
+      coursesCount: courses ? courses.length : 0,
+      totalCount,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalCount / parseInt(limit))
     });
+    
+    res.json(response);
   } catch (error) {
     console.error("Error fetching courses:", error);
     res.status(500).send("Server error");
@@ -237,13 +247,17 @@ router.post("/", protect,admin, async (req, res) => {
     if (!name || !price || !domain || !section) {
       return res.status(400).json({ message: "Please fill in all required fields" });
     }
-
+    // Normalize affiliate_link
+    let normalizedAffiliateLink = affiliate_link;
+    if (normalizedAffiliateLink && !/^https?:\/\//i.test(normalizedAffiliateLink)) {
+      normalizedAffiliateLink = 'https://' + normalizedAffiliateLink;
+    }
     const course = new Course({
       name,
       price,
       image,
       duration,
-      affiliate_link,
+      affiliate_link: normalizedAffiliateLink,
       rating,
       domain,
       section,
@@ -283,7 +297,12 @@ router.put("/:id",protect,admin,async(req,res)=>{
       course.price=price||course.price;
       course.image=image||course.image;
       course.duration=duration||course.duration;
-      course.affiliate_link=affiliate_link||course.affiliate_link;
+      // Normalize affiliate_link
+      let normalizedAffiliateLink = affiliate_link || course.affiliate_link;
+      if (normalizedAffiliateLink && !/^https?:\/\//i.test(normalizedAffiliateLink)) {
+        normalizedAffiliateLink = 'https://' + normalizedAffiliateLink;
+      }
+      course.affiliate_link=normalizedAffiliateLink;
       course.rating=rating||course.rating;
       course.domain=domain||course.domain;
       course.section=section||course.section;

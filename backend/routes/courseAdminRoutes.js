@@ -56,12 +56,17 @@ router.post("/", protect, admin, async (req, res) => {
 
     console.log("Image data:", imageData);
 
+    // Normalize affiliate_link
+    let normalizedAffiliateLink = affiliate_link;
+    if (normalizedAffiliateLink && !/^https?:\/\//i.test(normalizedAffiliateLink)) {
+      normalizedAffiliateLink = 'https://' + normalizedAffiliateLink;
+    }
     const courseData = { 
       name, 
       price, 
       image: imageData, 
       duration, 
-      affiliate_link, 
+      affiliate_link: normalizedAffiliateLink, 
       rating, 
       domain, 
       section, 
@@ -117,7 +122,12 @@ router.put("/:id", protect, admin, async (req, res) => {
       }
       
       course.duration = duration || course.duration;
-      course.affiliate_link = affiliate_link || course.affiliate_link;
+      // Normalize affiliate_link
+      let normalizedAffiliateLink = affiliate_link || course.affiliate_link;
+      if (normalizedAffiliateLink && !/^https?:\/\//i.test(normalizedAffiliateLink)) {
+        normalizedAffiliateLink = 'https://' + normalizedAffiliateLink;
+      }
+      course.affiliate_link = normalizedAffiliateLink;
       course.rating = rating || course.rating;
       course.domain = domain || course.domain;
       course.section = section || course.section;

@@ -10,7 +10,7 @@ const courses = [
       "years": 0,
       "months": 4
     },
-    "affiliate_link": "https://example.com/madeeasy-aptitude",
+    "affiliate_link": "https://www.udemy.com/course/madeeasy-aptitude/",
     "rating": 3.7,
     "domainName": "Aptitude",
     "sectionName": "Competitive Exams",
@@ -32,7 +32,7 @@ const courses = [
       "years": 0,
       "months": 11
     },
-    "affiliate_link": "https://example.com/r.s.-aggarwal-aptitude",
+    "affiliate_link": "https://www.amazon.in/Quantitative-Aptitude-R-S-Aggarwal/dp/9351343088/",
     "rating": 4.6,
     "domainName": "Aptitude",
     "sectionName": "Competitive Exams",
@@ -54,7 +54,7 @@ const courses = [
       "years": 1,
       "months": 8
     },
-    "affiliate_link": "https://example.com/testbook-aptitude",
+    "affiliate_link": "https://testbook.com/aptitude-courses",
     "rating": 4.3,
     "domainName": "Aptitude",
     "sectionName": "Competitive Exams",
@@ -208,7 +208,7 @@ const courses = [
       "years": 1,
       "months": 9
     },
-    "affiliate_link": "https://example.com/codewithharry-bootcamp",
+    "affiliate_link": "https://www.codewithharry.com/courses/",
     "rating": 3.8,
     "domainName": "Web Development",
     "sectionName": "Tech",
@@ -230,7 +230,7 @@ const courses = [
       "years": 0,
       "months": 3
     },
-    "affiliate_link": "https://example.com/udemy-react",
+    "affiliate_link": "https://www.udemy.com/course/react-the-complete-guide-incl-redux/",
     "rating": 4.4,
     "domainName": "Web Development",
     "sectionName": "Tech",
