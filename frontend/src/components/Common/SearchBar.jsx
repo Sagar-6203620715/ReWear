@@ -81,7 +81,7 @@ const SearchBar = () => {
           <input
             ref={searchInputRef}
             type="text"
-            placeholder="Search courses..."
+            placeholder="Search courses, domains, or skills..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={handleKeyDown}

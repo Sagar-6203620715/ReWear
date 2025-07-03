@@ -18,7 +18,12 @@ router.get("/", async (req, res) => {
     }
 
     if (search) {
-      query.name = { $regex: search, $options: "i" };
+      // Search across multiple fields: course name, meta title, and meta keywords
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { metaTitle: { $regex: search, $options: "i" } },
+        { metaKeywords: { $regex: search, $options: "i" } }
+      ];
     }
 
     // Sort logic
@@ -53,9 +58,78 @@ router.get("/", async (req, res) => {
     }
     
 
-    const courses = await Course.find(query)
-      .sort(sort)
-      .populate("domain section user", "name");
+    let courses;
+    
+    if (search) {
+      // Use aggregation to search across course fields and populated domain names
+      const pipeline = [
+        {
+          $lookup: {
+            from: 'domains',
+            localField: 'domain',
+            foreignField: '_id',
+            as: 'domainInfo'
+          }
+        },
+        {
+          $lookup: {
+            from: 'sections',
+            localField: 'section',
+            foreignField: '_id',
+            as: 'sectionInfo'
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'userInfo'
+          }
+        },
+        {
+          $match: {
+            $or: [
+              { name: { $regex: search, $options: "i" } },
+              { metaTitle: { $regex: search, $options: "i" } },
+              { metaKeywords: { $regex: search, $options: "i" } },
+              { 'domainInfo.name': { $regex: search, $options: "i" } }
+            ]
+          }
+        },
+        {
+          $addFields: {
+            domain: { $arrayElemAt: ['$domainInfo', 0] },
+            section: { $arrayElemAt: ['$sectionInfo', 0] },
+            user: { $arrayElemAt: ['$userInfo', 0] }
+          }
+        },
+        {
+          $project: {
+            domainInfo: 0,
+            sectionInfo: 0,
+            userInfo: 0
+          }
+        }
+      ];
+
+      // Add domain filter if specified (before the search match)
+      if (domain) {
+        pipeline.splice(0, 0, { $match: { domain: new mongoose.Types.ObjectId(domain) } });
+      }
+
+      // Add sorting
+      if (Object.keys(sort).length > 0) {
+        pipeline.push({ $sort: sort });
+      }
+
+      courses = await Course.aggregate(pipeline);
+    } else {
+      // Regular query for non-search cases
+      courses = await Course.find(query)
+        .sort(sort)
+        .populate("domain section user", "name");
+    }
 
     res.json(courses);
   } catch (error) {
