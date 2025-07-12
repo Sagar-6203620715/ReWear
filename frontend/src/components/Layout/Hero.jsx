@@ -17,21 +17,21 @@ import img3 from '../../assets/womens-collection.webp';
 const slides = [
   { 
     image: img1, 
-    alt: 'Online learning platform showcasing various courses',
-    title: 'Discover Your Path',
-    subtitle: 'Explore thousands of courses from top instructors'
+    alt: 'Sustainable fashion community clothing exchange',
+    title: 'Sustainable Fashion',
+    subtitle: 'Give your clothes a new life through community swapping'
   },
   { 
     image: img2, 
-    alt: 'Professional development and skill building',
-    title: 'Learn & Grow',
-    subtitle: 'Master new skills with expert guidance'
+    alt: 'Clothing exchange and fashion sustainability',
+    title: 'Swap & Save',
+    subtitle: 'Exchange clothes with like-minded fashion enthusiasts'
   },
   { 
     image: img3, 
-    alt: 'Educational content and learning resources',
-    title: 'Compare & Choose',
-    subtitle: 'Find the perfect course for your goals'
+    alt: 'Community-driven clothing exchange platform',
+    title: 'Join the Movement',
+    subtitle: 'Reduce textile waste and promote circular fashion'
   }
 ];
 
@@ -138,43 +138,42 @@ const Hero = () => {
       <div className="absolute inset-0 flex items-center justify-center z-10">
         <div className="text-center text-white px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
           <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-4 sm:mb-6">
-            Course{' '}
-            <span className="text-blue-400">Comparator</span>
+            Re<span className="text-green-400">Wear</span>
           </h1>
           <p className="text-sm sm:text-base md:text-lg lg:text-xl mb-6 sm:mb-8 text-gray-200 max-w-2xl mx-auto">
-            Choose the best course for your career. Compare prices, reviews, and features to make informed decisions.
+            Community Clothing Exchange. Swap clothes, reduce waste, and embrace sustainable fashion.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={handleFindNow}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-              aria-label="Search for courses"
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              aria-label="Browse clothing items"
             >
-              Find Your Course
+              Browse Items
             </button>
             
             <Link
-              to="/competitive_exams"
+              to="/start-swapping"
               className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40"
             >
-              Explore Categories
+              Start Swapping
             </Link>
           </div>
 
           {/* Stats */}
           <div className="mt-8 sm:mt-12 grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl font-bold text-blue-400">1000+</div>
-              <div className="text-xs sm:text-sm text-gray-300">Courses</div>
+              <div className="text-2xl sm:text-3xl font-bold text-green-400">1000+</div>
+              <div className="text-xs sm:text-sm text-gray-300">Items</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl font-bold text-blue-400">50+</div>
+              <div className="text-2xl sm:text-3xl font-bold text-green-400">50+</div>
               <div className="text-xs sm:text-sm text-gray-300">Categories</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl font-bold text-blue-400">10K+</div>
-              <div className="text-xs sm:text-sm text-gray-300">Students</div>
+              <div className="text-2xl sm:text-3xl font-bold text-green-400">10K+</div>
+              <div className="text-xs sm:text-sm text-gray-300">Swappers</div>
             </div>
           </div>
         </div>

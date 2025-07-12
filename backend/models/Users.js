@@ -25,6 +25,77 @@ const userSchema=new mongoose.Schema(
       enum:["customer","admin"],
       default:"customer",
     },
+    status:{
+      type:String,
+      enum:["active","suspended","pending"],
+      default:"active",
+    },
+    points:{
+      type:Number,
+      default:100, // Starting points for new users
+    },
+    profile:{
+      avatar:{
+        type:String,
+        default:"",
+      },
+      bio:{
+        type:String,
+        maxLength:500,
+        default:"",
+      },
+      location:{
+        type:String,
+        default:"",
+      },
+      phone:{
+        type:String,
+        default:"",
+      },
+      preferences:{
+        categories:[{
+          type:String,
+          enum:["Tops", "Bottoms", "Dresses", "Outerwear", "Sweaters", "Accessories", "Shoes", "Bags", "Activewear"]
+        }],
+        sizes:[{
+          type:String,
+          enum:["XS", "S", "M", "L", "XL", "XXL", "One Size", "Custom"]
+        }]
+      }
+    },
+    stats:{
+      itemsListed:{
+        type:Number,
+        default:0,
+      },
+      itemsSwapped:{
+        type:Number,
+        default:0,
+      },
+      totalSwaps:{
+        type:Number,
+        default:0,
+      },
+      memberSince:{
+        type:Date,
+        default:Date.now,
+      }
+    },
+    // Moderation fields
+    suspendedBy:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"User"
+    },
+    suspendedAt:{
+      type:Date
+    },
+    activatedBy:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"User"
+    },
+    activatedAt:{
+      type:Date
+    }
   },
   {timestamps:true}
 );

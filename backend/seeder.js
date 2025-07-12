@@ -1,12 +1,8 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const Course = require("./models/Course");
 const User = require("./models/Users");
-const courses = require("./data/course");
-const Section = require("./models/Section");
-const Domain = require("./models/Domain");
-const sectionData = require("./data/section");
-const domainData = require("./data/domain");
+const Item = require("./models/Item");
+const items = require("./data/items");
 
 dotenv.config();
 
@@ -15,34 +11,8 @@ mongoose.connect(process.env.MONGO_URI);
 const seedData = async () => {
   try {
     // Clear existing data
-    await Course.deleteMany();
     await User.deleteMany();
-    await Domain.deleteMany();
-    await Section.deleteMany();
-
-    // Insert sections
-    const insertedSections = await Section.insertMany(sectionData);
-
-    // Map section name to _id
-    const sectionMap = {};
-    insertedSections.forEach((section) => {
-      sectionMap[section.name] = section._id;
-    });
-
-    // Replace section name in domainData with actual ObjectId
-    const updatedDomains = domainData.map((domain) => ({
-      ...domain,
-      section: sectionMap[domain.sectionName], // make sure your domainData uses sectionName
-    }));
-
-    // Insert domains
-    const insertedDomains = await Domain.insertMany(updatedDomains);
-
-    // Map domain name to _id
-    const domainMap = {};
-    insertedDomains.forEach((domain) => {
-      domainMap[domain.name] = domain._id;
-    });
+    await Item.deleteMany();
 
     // Create admin user
     const adminUser = await User.create({
@@ -52,16 +22,68 @@ const seedData = async () => {
       role: "admin",
     });
 
-    // Prepare sample courses with actual IDs
-    const sampleCourses = courses.map((course) => ({
-      ...course,
-      domain: domainMap[course.domainName],     // use domainName in course data
-      section: sectionMap[course.sectionName],  // use sectionName in course data
-      user: adminUser._id,
+    // Create sample users for items
+    const sampleUsers = await User.create([
+      {
+        name: "Sarah M.",
+        email: "sarah@example.com",
+        password: "123456",
+        role: "customer",
+      },
+      {
+        name: "Emma L.",
+        email: "emma@example.com",
+        password: "123456",
+        role: "customer",
+      },
+      {
+        name: "Mike R.",
+        email: "mike@example.com",
+        password: "123456",
+        role: "customer",
+      },
+      {
+        name: "Alex K.",
+        email: "alex@example.com",
+        password: "123456",
+        role: "customer",
+      },
+      {
+        name: "Jessica P.",
+        email: "jessica@example.com",
+        password: "123456",
+        role: "customer",
+      },
+      {
+        name: "David T.",
+        email: "david@example.com",
+        password: "123456",
+        role: "customer",
+      },
+      {
+        name: "Maria G.",
+        email: "maria@example.com",
+        password: "123456",
+        role: "customer",
+      },
+      {
+        name: "Tom W.",
+        email: "tom@example.com",
+        password: "123456",
+        role: "customer",
+      }
+    ]);
+
+    // Prepare sample items with user IDs
+    const sampleItems = items.map((item, index) => ({
+      ...item,
+      user: sampleUsers[index % sampleUsers.length]._id,
+      status: 'available',
+      isActive: true
     }));
 
-    // Insert courses
-    await Course.insertMany(sampleCourses);
+    // Insert items
+    await Item.insertMany(sampleItems);
 
     console.log("✅ Data seeded successfully");
     process.exit();

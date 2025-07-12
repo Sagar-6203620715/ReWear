@@ -1,16 +1,19 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const ProtectedAdminRoute = () => {
-  const user = useSelector(state => state.auth.user);
+  const { user, isAuthenticated } = useSelector(state => state.auth);
 
-  // If not logged in or not admin, redirect to not authorized
+  // Check if user is authenticated and has admin role
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
   if (!user || user.role !== 'admin') {
     return <Navigate to="/not-authorized" replace />;
   }
 
-  // If admin, render the nested routes
   return <Outlet />;
 };
 

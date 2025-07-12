@@ -1,29 +1,30 @@
-# Course Comparator
+# ReWear – Community Clothing Exchange
 
-A modern, responsive web application for comparing and discovering online courses across different domains and platforms.
+A modern, responsive web application that enables users to exchange unused clothing through direct swaps or a point-based redemption system. The goal is to promote sustainable fashion and reduce textile waste by encouraging users to reuse wearable garments instead of discarding them.
 
 ## 🚀 Features
 
 ### Core Features
-- **Course Discovery**: Browse courses by domains, sections, and categories
-- **Advanced Filtering**: Sort courses by price, duration, rating, and more
-- **Real-time Chat**: Discuss courses with other users in domain-specific chat rooms
-- **Course Ratings & Reviews**: Rate and review courses with detailed feedback
+- **Clothing Discovery**: Browse clothing items by categories, sizes, and styles
+- **Advanced Filtering**: Sort items by size, brand, condition, style, and more
+- **Real-time Chat**: Discuss clothing items with other users in category-specific chat rooms
+- **Item Ratings & Reviews**: Rate and review clothing items with detailed feedback
 - **Responsive Design**: Fully responsive design that works on all devices
 - **Admin Panel**: Comprehensive admin interface for managing content
 
 ### User Features
 - **User Authentication**: Secure login/register system with JWT
-- **Course Comparison**: Compare courses side-by-side
-- **Affiliate Integration**: Direct links to course platforms
+- **Clothing Comparison**: Compare clothing items side-by-side
+- **Direct Swaps**: Exchange clothing items directly with other users
+- **Point System**: Earn and redeem points for clothing exchanges
 - **Search Functionality**: Advanced search with filters
 - **Mobile-First Design**: Optimized for mobile and tablet devices
 
 ### Admin Features
 - **User Management**: Manage user accounts and permissions
-- **Course Management**: Add, edit, and delete courses
-- **Domain Management**: Organize courses by domains
-- **Section Management**: Categorize domains into sections
+- **Clothing Management**: Add, edit, and delete clothing items
+- **Category Management**: Organize clothing by categories
+- **Section Management**: Categorize clothing into sections
 - **Content Moderation**: Moderate reviews and discussions
 
 ## 🛠️ Tech Stack
@@ -147,20 +148,20 @@ npm run make-admin
 ### Project Structure
 
 ```
-course_comparator/
+rewear/
 ├── backend/
 │   ├── config/
 │   │   └── db.js
 │   │   ├── data/
-│   │   │   ├── course.js
-│   │   │   ├── domain.js
+│   │   │   ├── clothing.js
+│   │   │   ├── category.js
 │   │   │   └── section.js
 │   │   ├── middleware/
 │   │   │   └── authMiddleware.js
 │   │   ├── models/
 │   │   │   ├── Chat.js
-│   │   │   ├── Course.js
-│   │   │   ├── Domain.js
+│   │   │   ├── Clothing.js
+│   │   │   ├── Category.js
 │   │   │   ├── Review.js
 │   │   │   ├── Section.js
 │   │   │   ├── Subscriber.js
@@ -168,10 +169,10 @@ course_comparator/
 │   │   ├── routes/
 │   │   │   ├── adminRoutes.js
 │   │   │   ├── chatRoutes.js
-│   │   │   ├── courseAdminRoutes.js
-│   │   │   ├── courseRoutes.js
-│   │   │   ├── domainAdminRoutes.js
-│   │   │   ├── domainRoutes.js
+│   │   │   ├── clothingAdminRoutes.js
+│   │   │   ├── clothingRoutes.js
+│   │   │   ├── categoryAdminRoutes.js
+│   │   │   ├── categoryRoutes.js
 │   │   │   ├── sectionRoutes.js
 │   │   │   ├── subscriberRoutes.js
 │   │   │   ├── uploadRoutes.js
@@ -184,7 +185,7 @@ course_comparator/
 │   │   │   │   ├── Admin/
 │   │   │   │   ├── Chat/
 │   │   │   │   ├── Common/
-│   │   │   │   ├── Courses/
+│   │   │   │   ├── Clothing/
 │   │   │   │   └── Layout/
 │   │   │   │   ├── pages/
 │   │   │   │   ├── redux/
@@ -283,4 +284,4 @@ Stay updated with the latest features and improvements by:
 
 ---
 
-****
+**Built with ❤️ by the ReWear Team**

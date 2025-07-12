@@ -1,9 +1,9 @@
 {
-  "name": "course-comparator-frontend",
+  "name": "rewear-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Frontend for Course Comparator application",
+  "description": "Frontend for ReWear - Community Clothing Exchange application",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

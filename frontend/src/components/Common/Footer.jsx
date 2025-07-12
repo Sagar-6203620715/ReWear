@@ -20,10 +20,9 @@ const Footer = () => {
   };
 
   const categories = [
-    { name: 'Competitive Exams', path: '/competitive_exams' },
-    { name: 'Tech', path: '/tech' },
-    { name: 'Skills', path: '/skills' },
-    { name: 'School', path: '/school' }
+    { name: 'Browse Items', path: '/browse' },
+    { name: 'Start Swapping', path: '/start-swapping' },
+    { name: 'List an Item', path: '/list-item' }
   ];
 
   const supportLinks = [
@@ -47,10 +46,10 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
             <p className="text-gray-300 mb-4 text-sm">
-              Be the first to hear about new courses, exclusive events, and special offers.
+              Be the first to hear about new items, exclusive events, and special offers.
             </p>
             <p className="font-medium text-sm text-blue-400 mb-6">
-              Sign up and get 10% off your first course!
+              Sign up and get updates about new items!
             </p>
 
             <form onSubmit={handleNewsletterSubmit} className="space-y-3">
@@ -140,8 +139,8 @@ const Footer = () => {
               </div>
               <div className="flex items-center text-gray-300 text-sm">
                 <FiMail className="mr-2 h-4 w-4" />
-                <a href="mailto:info@coursify.com" className="hover:text-white transition-colors duration-200">
-                  info@coursify.com
+                <a href="mailto:info@rewear.com" className="hover:text-white transition-colors duration-200">
+                  info@rewear.com
                 </a>
               </div>
               <div className="flex items-start text-gray-300 text-sm">
@@ -156,7 +155,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-12 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm text-center md:text-left">
-              © 2025 Coursify. All Rights Reserved.
+              © 2025 ReWear. All Rights Reserved.
             </p>
             <div className="flex space-x-6 text-sm">
               <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors duration-200">

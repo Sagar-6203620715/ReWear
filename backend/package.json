@@ -1,7 +1,7 @@
 {
-  "name": "course-comparator-backend",
+  "name": "rewear-backend",
   "version": "1.0.0",
-  "description": "Backend API for Course Comparator application",
+  "description": "Backend API for ReWear - Community Clothing Exchange application",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -25,10 +25,11 @@
     "mongodb",
     "mongoose",
     "api",
-    "courses",
-    "education"
+    "clothing",
+    "sustainable-fashion",
+    "clothing-exchange"
   ],
-  "author": "Course Comparator Team",
+  "author": "ReWear Team",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^3.0.2",

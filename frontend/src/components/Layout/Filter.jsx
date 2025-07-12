@@ -91,7 +91,7 @@ const Filter = ({ onClose, onSort }) => {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden animate-fadeIn">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Sort Courses</h2>
+          <h2 className="text-xl font-bold text-gray-900">Sort Items</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
@@ -104,7 +104,7 @@ const Filter = ({ onClose, onSort }) => {
         {/* Content */}
         <div className="p-6">
           <p className="text-sm text-gray-600 mb-6">
-            Choose how you'd like to sort the courses
+            Choose how you'd like to sort the items
           </p>
 
           <div className="space-y-3">

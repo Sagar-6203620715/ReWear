@@ -21,7 +21,7 @@ const Header = () => {
       {/* topbar */}
       <Topbar />
       {/* navbar */}
-      <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} user={user} />
     </header>
   );
 };

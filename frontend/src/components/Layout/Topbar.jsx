@@ -35,7 +35,7 @@ const Topbar = () => {
         {/* Tagline */}
         <div className="text-xs sm:text-sm text-center flex-grow px-2">
           <span className="font-medium">
-            Your Personalized Guide to the Best Online Courses
+            Sustainable Fashion Through Community Clothing Exchange
           </span>
         </div>
         

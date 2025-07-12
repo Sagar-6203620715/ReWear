@@ -65,26 +65,26 @@ const Login = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <Link to="/" className="inline-block">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Coursify</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">ReWear</h1>
             </Link>
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">Welcome back</h2>
             <p className="text-gray-600">
               Sign in to your account to continue
             </p>
             
-            {/* Show message if redirected from course click */}
-            {message === 'login-to-view-course' && (
+            {/* Show message if redirected from item click */}
+            {message === 'login-to-view-item' && (
               <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-700 font-medium">
-                  Please login to view course details.
+                  Please login to view item details.
                 </p>
               </div>
             )}
             
-            {message === 'login-to-rate-course' && (
+            {message === 'login-to-rate-item' && (
               <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-700 font-medium">
-                  Please login to rate courses and provide feedback.
+                  Please login to rate items and provide feedback.
                 </p>
               </div>
             )}

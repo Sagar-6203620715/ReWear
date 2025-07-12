@@ -74,4 +74,109 @@ router.get("/profile",protect,async(req,res)=>{
   res.json(req.user);
 });
 
+// @route   PUT /api/users/profile
+// @desc    Update user profile
+// @access  Private
+router.put("/profile", protect, async (req, res) => {
+  try {
+    const { name, bio, location, phone, preferences } = req.body;
+    
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (bio !== undefined) updateData["profile.bio"] = bio;
+    if (location !== undefined) updateData["profile.location"] = location;
+    if (phone !== undefined) updateData["profile.phone"] = phone;
+    if (preferences) updateData["profile.preferences"] = preferences;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: "Server error while updating profile" });
+  }
+});
+
+// @route   GET /api/users/dashboard
+// @desc    Get user dashboard data
+// @access  Private
+router.get("/dashboard", protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    const Item = require("../models/Item");
+    const Swap = require("../models/Swap");
+
+    // Get user's items
+    const userItems = await Item.find({ user: req.user.id })
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    // Get user's swaps
+    const userSwaps = await Swap.find({
+      $or: [
+        { initiator: req.user.id },
+        { recipient: req.user.id }
+      ]
+    })
+    .populate([
+      { path: 'initiator', select: 'name' },
+      { path: 'recipient', select: 'name' },
+      { path: 'initiatorItem', select: 'title image' },
+      { path: 'recipientItem', select: 'title image' }
+    ])
+    .sort({ createdAt: -1 })
+    .limit(5);
+
+    // Get pending swaps count
+    const pendingSwaps = await Swap.countDocuments({
+      $or: [
+        { initiator: req.user.id },
+        { recipient: req.user.id }
+      ],
+      status: "pending"
+    });
+
+    res.json({
+      user,
+      userItems,
+      userSwaps,
+      pendingSwaps
+    });
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    res.status(500).json({ message: "Server error while fetching dashboard data" });
+  }
+});
+
+// @route   GET /api/users/:id
+// @desc    Get user by ID (public info only)
+// @access  Public
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .select('name profile stats createdAt')
+      .lean();
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    if (error.kind === 'ObjectId') {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(500).json({ message: "Server error while fetching user" });
+  }
+});
+
 module.exports=router;

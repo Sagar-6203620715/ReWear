@@ -6,15 +6,11 @@ const mongoose = require("mongoose");
 const http = require('http');
 const { Server } = require('socket.io');
 const userRoutes = require("./routes/userRoutes");
-const courseRoutes = require("./routes/courseRoutes");
-const domainRoutes = require("./routes/domainRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
-const sectionRoutes = require("./routes/sectionRoutes");
-const chatRoutes = require("./routes/chatRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const courseAdminRoutes = require("./routes/courseAdminRoutes");
-const domainAdminRoutes = require("./routes/domainAdminRoutes");
 const subscriberRoutes = require("./routes/subscriberRoutes");
+const itemRoutes = require("./routes/itemRoutes");
+const swapRoutes = require("./routes/swapRoutes");
 const app = express();
 
 const PORT = process.env.PORT || 9000;
@@ -93,22 +89,18 @@ if (MONGO_URI) {
 }
 
 app.use("/api/users", userRoutes);
-app.use("/api/courses", courseRoutes);
-app.use("/api/domains", domainRoutes);
 app.use("/api/upload", uploadRoutes);
-app.use("/api/sections", sectionRoutes);
-app.use("/api/chats", chatRoutes);
-app.use("/api/admin/users", adminRoutes);
-app.use("/api/admin/courses", courseAdminRoutes);
-app.use("/api/admin/domains", domainAdminRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/subscribers", subscriberRoutes);
+app.use("/api/items", itemRoutes);
+app.use("/api/swaps", swapRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
 app.get("/", (req, res) => {
-  res.json({ message: "Coursify API" });
+  res.json({ message: "ReWear API" });
 });
 
 const server = http.createServer(app);
@@ -143,13 +135,13 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
-  socket.on('joinRoom', (domainId) => {
-    socket.join(domainId);
-    console.log(`User ${socket.id} joined room: ${domainId}`);
+  socket.on('joinRoom', (roomId) => {
+    socket.join(roomId);
+    console.log(`User ${socket.id} joined room: ${roomId}`);
   });
 
   socket.on('chatMessage', (data) => {
-    io.to(data.domainId).emit('chatMessage', data);
+    io.to(data.roomId).emit('chatMessage', data);
   });
 
   socket.on('disconnect', () => {

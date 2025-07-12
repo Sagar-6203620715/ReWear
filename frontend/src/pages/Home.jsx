@@ -1,27 +1,24 @@
 // pages/Home.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Hero from '../components/Layout/Hero';
-import DomainCourses from '../components/Courses/DomainCourses';
-import LoadMore from '../components/Common/LoadMore';
+import ItemsGrid from '../components/Items/ItemsGrid';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSections } from '../redux/slices/sectionsSlice';
-import { fetchDomainsBySection } from '../redux/slices/domainsSlice';
+import { fetchItems } from '../redux/slices/itemsSlice';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { sections, loading, error } = useSelector(state => state.sections);
-  const { domains } = useSelector(state => state.domains);
+  const { items, loading, error } = useSelector(state => state.items);
 
   useEffect(() => {
-    dispatch(fetchSections());
+    dispatch(fetchItems());
   }, [dispatch]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading courses...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading items...</p>
         </div>
       </div>
     );
@@ -40,7 +37,7 @@ const Home = () => {
           <p className="text-gray-600 mb-4">{error}</p>
           <button 
             onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
+            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors duration-200"
           >
             Try Again
           </button>
@@ -53,91 +50,24 @@ const Home = () => {
     <div className="min-h-screen">
       <Hero />
       
-      {sections.length === 0 ? (
-        <div className="container mx-auto px-4 py-12">
-          <div className="text-center">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">No courses available</h2>
-            <p className="text-gray-600">Check back later for new courses!</p>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-8">
-          {sections.map(section => (
-            <div key={section._id} className="container mx-auto px-4">
-              <DynamicDomains sectionName={section.name} />
-              <LoadMore x={section.name} />
+      <div className="container mx-auto px-4">
+        {items.length === 0 ? (
+          <div className="py-12">
+            <div className="text-center">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">No items available</h2>
+              <p className="text-gray-600">Check back later for new items!</p>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ) : (
+          <ItemsGrid 
+            items={items} 
+            title="Featured Items" 
+            showViewAll={true}
+          />
+        )}
+      </div>
     </div>
   );
-};
-
-const DynamicDomains = ({ sectionName }) => {
-  const dispatch = useDispatch();
-  const [firstDomain, setFirstDomain] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchDomains = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        console.log('Home - Fetching domains for section:', sectionName);
-        const res = await dispatch(fetchDomainsBySection(sectionName));
-        console.log('Home - Domains response:', res.payload);
-        if (res.payload && res.payload.length > 0) {
-          const domain = res.payload[0];
-          console.log('Home - Selected domain:', domain);
-          console.log('Home - Domain ID:', domain._id);
-          console.log('Home - Domain Name:', domain.name);
-          setFirstDomain(domain);
-        } else {
-          console.log('Home - No domains found for section:', sectionName);
-        }
-      } catch (err) {
-        setError('Failed to load domains');
-        console.error('Error fetching domains:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDomains();
-  }, [dispatch, sectionName]);
-
-  if (isLoading) {
-    return (
-      <div className="py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-gray-200 rounded-lg h-64"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="py-8">
-        <div className="text-center">
-          <p className="text-red-600 text-sm">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!firstDomain) {
-    return null;
-  }
-
-  return <DomainCourses domain={firstDomain} />;
 };
 
 export default Home;

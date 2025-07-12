@@ -21,7 +21,7 @@ const SearchBar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+      navigate(`/browse?search=${encodeURIComponent(searchTerm.trim())}`);
       setSearchTerm('');
       setIsOpen(false);
     }
@@ -81,7 +81,7 @@ const SearchBar = () => {
           <input
             ref={searchInputRef}
             type="text"
-            placeholder="Search courses, domains, or skills..."
+            placeholder="Search items..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -108,7 +108,7 @@ const SearchBar = () => {
             <input
               ref={searchInputRef}
               type="text"
-              placeholder="Search for courses, domains, or skills..."
+              placeholder="Search for items..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={handleKeyDown}
