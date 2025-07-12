@@ -1,9 +1,69 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const StartSwapping = () => {
+  const { user } = useSelector((state) => state.auth);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleGetStarted = (e) => {
+    if (user) {
+      e.preventDefault();
+      setShowPopup(true);
+    }
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
+  const handleModalClick = (e) => {
+    if (e.target === e.currentTarget) {
+      closePopup();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+      {/* Popup Modal */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleModalClick}>
+          <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">You're Already Logged In!</h3>
+            <p className="text-gray-600 mb-6">
+              Great! You're already signed up. You can now proceed to the next step and start listing your items.
+            </p>
+            <div className="space-y-3">
+              <Link
+                to="/list-item"
+                className="block w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200"
+                onClick={closePopup}
+              >
+                List Your First Item
+              </Link>
+              <Link
+                to="/browse"
+                className="block w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200"
+                onClick={closePopup}
+              >
+                Browse Items
+              </Link>
+              <button
+                onClick={closePopup}
+                className="block w-full bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-200"
+              >
+                Stay Here
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
@@ -27,6 +87,7 @@ const StartSwapping = () => {
             <Link
               to="/register"
               className="inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200"
+              onClick={handleGetStarted}
             >
               Get Started
             </Link>
@@ -124,6 +185,7 @@ const StartSwapping = () => {
             <Link
               to="/register"
               className="inline-block bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-700 transition-colors duration-200"
+              onClick={handleGetStarted}
             >
               Join ReWear
             </Link>

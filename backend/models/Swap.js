@@ -15,7 +15,7 @@ const swapSchema = new mongoose.Schema(
     initiatorItem: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Item",
-      required: true
+      required: true // Now required, no points-only swaps
     },
     recipientItem: {
       type: mongoose.Schema.Types.ObjectId,
@@ -27,10 +27,7 @@ const swapSchema = new mongoose.Schema(
       enum: ["pending", "accepted", "rejected", "completed", "cancelled"],
       default: "pending"
     },
-    points: {
-      type: Number,
-      default: 0
-    },
+    // points field removed
     messages: [{
       sender: {
         type: mongoose.Schema.Types.ObjectId,
@@ -56,6 +53,24 @@ const swapSchema = new mongoose.Schema(
       ref: "User"
     },
     reason: {
+      type: String
+    },
+    // Admin approval/rejection fields
+    approvedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+    approvedAt: {
+      type: Date
+    },
+    rejectedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+    rejectedAt: {
+      type: Date
+    },
+    rejectionReason: {
       type: String
     }
   },

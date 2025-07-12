@@ -38,11 +38,7 @@ const FAQs = () => {
       questions: [
         {
           question: 'How does the swapping process work?',
-          answer: 'When you find an item you like, you can either request a direct swap with one of your items or redeem it using points. The item owner will review your request and can accept, decline, or propose a counter-offer.'
-        },
-        {
-          question: 'What are points and how do I earn them?',
-          answer: 'Points are our platform currency. You earn points by successfully completing swaps, receiving positive reviews, and being an active community member. You can spend points to redeem items without offering anything in return.'
+          answer: 'When you find an item you like, you can request a direct swap with one of your items. The item owner will review your request and can accept, decline, or propose a counter-offer.'
         },
         {
           question: 'How do I handle shipping and delivery?',

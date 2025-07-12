@@ -23,14 +23,22 @@ const UserManagementNew = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('userToken');
+      console.log('Fetching users with token:', token ? 'Token exists' : 'No token');
+      console.log('Backend URL:', import.meta.env.VITE_BACKEND_URL);
+      console.log('Request URL:', `${import.meta.env.VITE_BACKEND_URL}/api/admin/users?status=${filter}`);
+      
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/admin/users?status=${filter}`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
       );
+      
+      console.log('Users response:', response.data);
       setUsers(response.data.users);
     } catch (err) {
+      console.error('Error fetching users:', err);
+      console.error('Error response:', err.response?.data);
       setError(err?.response?.data?.message || 'Failed to fetch users');
     } finally {
       setLoading(false);
@@ -83,6 +91,13 @@ const UserManagementNew = () => {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">User Management</h1>
           <p className="text-gray-600">Manage user accounts and permissions</p>
         </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-red-800">{error}</p>
+          </div>
+        )}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

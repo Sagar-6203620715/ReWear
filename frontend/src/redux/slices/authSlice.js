@@ -1,7 +1,16 @@
 import {createSlice,createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
 
-const userFromStorage = localStorage.getItem("userInfo")?JSON.parse(localStorage.getItem("userInfo")):null;
+const userFromStorage = (() => {
+  try {
+    const userInfo = localStorage.getItem("userInfo");
+    return userInfo ? JSON.parse(userInfo) : null;
+  } catch (error) {
+    console.error("Error parsing user info from localStorage:", error);
+    localStorage.removeItem("userInfo"); // Clear corrupted data
+    return null;
+  }
+})();
 
 const initialGuestId = localStorage.getItem("guestId")||`guest_${new Date().getTime()}`;
 localStorage.setItem("guestId",initialGuestId);
@@ -46,6 +55,28 @@ export const registerUser =createAsyncThunk("auth/registerUser",async (userData,
   }
 });
 
+export const fetchCurrentUser = createAsyncThunk("auth/fetchCurrentUser", async (_, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem("userToken");
+    if (!token) {
+      throw new Error("No token found");
+    }
+
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/users/profile`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+    
+    localStorage.setItem("userInfo", JSON.stringify(response.data.user));
+    return response.data.user;
+    
+  } catch (error) {
+    return rejectWithValue(error.response?.data || error.message);
+  }
+});
+
 
 const authSlice=createSlice({
   name:"auth",
@@ -86,6 +117,18 @@ const authSlice=createSlice({
       state.user=action.payload;
     })
     .addCase(registerUser.rejected,(state,action)=>{
+      state.loading=false;
+      state.error=action.payload.message;
+    })
+    .addCase(fetchCurrentUser.pending,(state)=>{
+      state.loading=true;
+      state.error=null;
+    })
+    .addCase(fetchCurrentUser.fulfilled,(state,action)=>{
+      state.loading=false;
+      state.user=action.payload;
+    })
+    .addCase(fetchCurrentUser.rejected,(state,action)=>{
       state.loading=false;
       state.error=action.payload.message;
     })

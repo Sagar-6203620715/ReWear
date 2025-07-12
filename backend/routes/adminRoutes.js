@@ -151,6 +151,25 @@ router.put("/items/:id/flag", protect, admin, async (req, res) => {
   }
 });
 
+// Remove item (admin only)
+router.delete("/items/:id", protect, admin, async (req, res) => {
+  try {
+    const item = await Item.findById(req.params.id);
+    
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    // Completely remove the item from database
+    await Item.findByIdAndDelete(req.params.id);
+
+    res.json({ message: "Item removed successfully" });
+  } catch (error) {
+    console.error('Error removing item:', error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // Get users for management
 router.get("/users", protect, admin, async (req, res) => {
   try {
@@ -161,25 +180,25 @@ router.get("/users", protect, admin, async (req, res) => {
       query.status = status;
     }
 
-    const users = await User.find(query)
-      .select('-password')
-      .populate({
-        path: 'items',
-        select: 'title status',
-        match: { status: { $in: ['approved', 'pending'] } }
-      });
+    // Get users first
+    const users = await User.find(query).select('-password');
+    
+    // Get item counts for each user
+    const usersWithItemCounts = await Promise.all(
+      users.map(async (user) => {
+        const itemCount = await Item.countDocuments({ user: user._id });
+        return {
+          ...user.toObject(),
+          itemsCount: itemCount
+        };
+      })
+    );
 
-    // Add item count to each user
-    const usersWithItemCount = users.map(user => {
-      const userObj = user.toObject();
-      userObj.itemsCount = user.items.length;
-      return userObj;
-    });
-
-    res.json({ users: usersWithItemCount });
+    console.log('Users found:', usersWithItemCounts.length);
+    res.json({ users: usersWithItemCounts });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error('Error in /users route:', error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
@@ -283,7 +302,7 @@ router.get("/analytics", protect, admin, async (req, res) => {
     // Calculate total revenue (from swaps)
     const totalRevenue = await Swap.aggregate([
       {
-        $match: { status: "completed" }
+        $match: { status: "accepted" }
       },
       {
         $group: {
@@ -305,6 +324,104 @@ router.get("/analytics", protect, admin, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Get swaps for admin moderation
+router.get("/swaps", protect, admin, async (req, res) => {
+  try {
+    const { status } = req.query;
+    let query = {};
+    
+    if (status && status !== 'all') {
+      query.status = status;
+    }
+
+    const swaps = await Swap.find(query)
+      .populate([
+        { path: 'initiator', select: 'name email' },
+        { path: 'recipient', select: 'name email' },
+        { path: 'initiatorItem', select: 'title image condition status' },
+        { path: 'recipientItem', select: 'title image condition status' }
+      ])
+      .sort({ createdAt: -1 });
+
+    res.json({ swaps });
+  } catch (error) {
+    console.error('Error fetching swaps for admin:', error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Approve swap
+router.put("/swaps/:id/approve", protect, admin, async (req, res) => {
+  try {
+    const swap = await Swap.findById(req.params.id);
+    
+    if (!swap) {
+      return res.status(404).json({ message: "Swap not found" });
+    }
+
+    if (swap.status !== "pending") {
+      return res.status(400).json({ message: "Only pending swaps can be approved" });
+    }
+
+    swap.status = "accepted";
+    swap.approvedBy = req.user._id;
+    swap.approvedAt = new Date();
+    await swap.save();
+
+    // Update item statuses to swapped (both items are now swapped)
+    await Item.findByIdAndUpdate(swap.initiatorItem, { 
+      status: 'swapped',
+      isActive: false 
+    });
+    await Item.findByIdAndUpdate(swap.recipientItem, { 
+      status: 'swapped',
+      isActive: false 
+    });
+
+    res.json({ message: "Swap approved successfully", swap });
+  } catch (error) {
+    console.error('Error approving swap:', error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Reject swap
+router.put("/swaps/:id/reject", protect, admin, async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const swap = await Swap.findById(req.params.id);
+    
+    if (!swap) {
+      return res.status(404).json({ message: "Swap not found" });
+    }
+
+    if (swap.status !== "pending") {
+      return res.status(400).json({ message: "Only pending swaps can be rejected" });
+    }
+
+    swap.status = "rejected";
+    swap.rejectedBy = req.user._id;
+    swap.rejectedAt = new Date();
+    swap.rejectionReason = reason || "Swap rejected by admin";
+    await swap.save();
+
+    // Make items available again
+    await Item.findByIdAndUpdate(swap.initiatorItem, { 
+      status: 'approved',
+      isActive: true 
+    });
+    await Item.findByIdAndUpdate(swap.recipientItem, { 
+      status: 'approved',
+      isActive: true 
+    });
+
+    res.json({ message: "Swap rejected successfully", swap });
+  } catch (error) {
+    console.error('Error rejecting swap:', error);
     res.status(500).json({ message: "Server error" });
   }
 });

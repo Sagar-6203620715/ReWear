@@ -9,6 +9,12 @@ const Navbar = ({ isLoggedIn, handleLogout, user }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation();
 
+  // Debug logging
+  console.log('Navbar - isLoggedIn:', isLoggedIn);
+  console.log('Navbar - user:', user);
+  console.log('Navbar - user role:', user?.role);
+  console.log('Navbar - should show admin button:', isLoggedIn && user?.role === 'admin');
+
   const toggleNavDrawer = () => setNavDrawerOpen(!navDrawerOpen);
 
   const handleUserIconClick = (e) => {

@@ -39,6 +39,7 @@ export const createSwap = createAsyncThunk(
           headers: { Authorization: `Bearer ${token}` }
         }
       );
+      
       return response.data.swap;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to create swap');
@@ -127,7 +128,7 @@ export const addSwapMessage = createAsyncThunk(
   async ({ swapId, message }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('userToken');
-      const response = await axios.post(
+      const response = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/swaps/${swapId}/message`,
         { message },
         {
@@ -264,7 +265,7 @@ const swapsSlice = createSlice({
         state.error = action.payload;
       })
       
-      // Add swap message
+      // Add message
       .addCase(addSwapMessage.pending, (state) => {
         state.loading = true;
         state.error = null;

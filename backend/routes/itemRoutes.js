@@ -294,7 +294,7 @@ router.get("/user/:userId", async (req, res) => {
 router.get("/categories", async (req, res) => {
   try {
     const categories = await Item.distinct('category', {
-      status: 'available',
+      status: { $in: ['approved', 'available'] },
       isActive: true
     });
 

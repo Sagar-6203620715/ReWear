@@ -35,14 +35,16 @@ export const createItem = createAsyncThunk(
   async (itemData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('userToken');
+      
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000'}/api/items`, itemData, {
         headers: {
           'Content-Type': 'application/json',
-          'x-auth-token': token
+          'Authorization': `Bearer ${token}`
         }
       });
       return response.data.item;
     } catch (error) {
+      console.error('Error in createItem thunk:', error.response?.data || error.message);
       return rejectWithValue(error.response?.data?.message || "Failed to create item");
     }
   }

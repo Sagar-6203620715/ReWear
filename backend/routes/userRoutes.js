@@ -115,7 +115,11 @@ router.get("/dashboard", protect, async (req, res) => {
     const Swap = require("../models/Swap");
 
     // Get user's items
-    const userItems = await Item.find({ user: req.user.id })
+    const userItems = await Item.find({ 
+      user: req.user.id,
+      isActive: true,
+      status: { $in: ['pending', 'approved', 'rejected', 'flagged', 'swapped'] }
+    })
       .sort({ createdAt: -1 })
       .limit(5);
 
@@ -129,8 +133,8 @@ router.get("/dashboard", protect, async (req, res) => {
     .populate([
       { path: 'initiator', select: 'name' },
       { path: 'recipient', select: 'name' },
-      { path: 'initiatorItem', select: 'title image' },
-      { path: 'recipientItem', select: 'title image' }
+      { path: 'initiatorItem', select: 'name images' },
+      { path: 'recipientItem', select: 'name images' }
     ])
     .sort({ createdAt: -1 })
     .limit(5);
@@ -143,6 +147,30 @@ router.get("/dashboard", protect, async (req, res) => {
       ],
       status: "pending"
     });
+
+    // Calculate stats
+    const itemsListed = await Item.countDocuments({ 
+      user: req.user.id,
+      isActive: true,
+      status: { $in: ['pending', 'approved', 'rejected', 'flagged', 'swapped'] }
+    });
+    const itemsSwapped = await Swap.countDocuments({
+      $or: [
+        { initiator: req.user.id },
+        { recipient: req.user.id }
+      ],
+      status: "accepted"
+    });
+
+    // Update user stats if they don't exist
+    if (!user.stats) {
+      user.stats = {};
+    }
+    user.stats.itemsListed = itemsListed;
+    user.stats.itemsSwapped = itemsSwapped;
+    if (!user.stats.memberSince) {
+      user.stats.memberSince = user.createdAt;
+    }
 
     res.json({
       user,

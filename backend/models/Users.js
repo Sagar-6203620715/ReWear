@@ -30,10 +30,6 @@ const userSchema=new mongoose.Schema(
       enum:["active","suspended","pending"],
       default:"active",
     },
-    points:{
-      type:Number,
-      default:100, // Starting points for new users
-    },
     profile:{
       avatar:{
         type:String,

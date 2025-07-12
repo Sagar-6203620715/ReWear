@@ -29,32 +29,32 @@ const Filter = ({ onClose, onSort }) => {
 
   const sortOptions = [
     {
-      id: 'priceLow',
-      label: 'Price: Low to High',
-      icon: FiDollarSign,
-      color: 'blue',
-      description: 'Sort by lowest price first'
-    },
-    {
-      id: 'priceHigh',
-      label: 'Price: High to Low',
-      icon: FiDollarSign,
-      color: 'blue',
-      description: 'Sort by highest price first'
-    },
-    {
-      id: 'durationLow',
-      label: 'Duration: Short to Long',
-      icon: FiClock,
+      id: 'conditionBest',
+      label: 'Condition: Best to Worst',
+      icon: FiStar,
       color: 'green',
-      description: 'Sort by shortest duration first'
+      description: 'Sort by best condition first'
     },
     {
-      id: 'durationHigh',
-      label: 'Duration: Long to Short',
-      icon: FiClock,
+      id: 'conditionWorst',
+      label: 'Condition: Worst to Best',
+      icon: FiStar,
       color: 'green',
-      description: 'Sort by longest duration first'
+      description: 'Sort by worst condition first'
+    },
+    {
+      id: 'newest',
+      label: 'Newest First',
+      icon: FiClock,
+      color: 'blue',
+      description: 'Sort by most recently added'
+    },
+    {
+      id: 'oldest',
+      label: 'Oldest First',
+      icon: FiClock,
+      color: 'blue',
+      description: 'Sort by least recently added'
     },
     {
       id: 'ratingHigh',

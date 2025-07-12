@@ -44,10 +44,10 @@ const ListItem = () => {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await axios.post('/api/upload', formData, {
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/upload`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'x-auth-token': localStorage.getItem('userToken')
+            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
           }
         });
 
@@ -104,24 +104,26 @@ const ListItem = () => {
     try {
       const result = await dispatch(createItem(formData)).unwrap();
       
-      alert('Item listed successfully! Your item is now available for swapping.');
-      
-      // Reset form
-      setFormData({
-        name: '',
-        category: '',
-        size: '',
-        condition: '',
-        description: '',
-        brand: '',
-        color: '',
-        material: '',
-        images: []
-      });
-      setUploadedImages([]);
-      
-      // Navigate to browse items
-      navigate('/browse-items');
+      if (result) {
+        alert('Item listed successfully! Your item is now available for swapping.');
+        
+        // Reset form
+        setFormData({
+          name: '',
+          category: '',
+          size: '',
+          condition: '',
+          description: '',
+          brand: '',
+          color: '',
+          material: '',
+          images: []
+        });
+        setUploadedImages([]);
+        
+        // Navigate to browse items only on success
+        navigate('/browse');
+      }
       
     } catch (error) {
       console.error('Error creating item:', error);

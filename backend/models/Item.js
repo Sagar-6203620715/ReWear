@@ -63,7 +63,7 @@ const itemSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected", "flagged", "available", "swapped", "removed"],
+      enum: ["pending", "approved", "rejected", "flagged", "available", "pending_swap", "swapped", "removed"],
       default: "pending"
     },
     isActive: {

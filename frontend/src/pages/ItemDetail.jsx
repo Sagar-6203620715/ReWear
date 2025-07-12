@@ -3,18 +3,13 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
   FiArrowLeft, 
+  FiHeart, 
+  FiShare2, 
   FiUser, 
   FiMapPin, 
-  FiCalendar, 
-  FiHeart,
-  FiShare2,
-  FiMessageSquare,
-  FiGift,
   FiPackage,
-  FiCheckCircle,
   FiXCircle,
-  FiClock,
-  FiStar
+  FiCheckCircle
 } from 'react-icons/fi';
 import { createSwap } from '../redux/slices/swapsSlice';
 import axios from 'axios';
@@ -31,9 +26,6 @@ const ItemDetail = () => {
   const [error, setError] = useState('');
   const [selectedImage, setSelectedImage] = useState(0);
   const [showSwapModal, setShowSwapModal] = useState(false);
-  const [showPointsModal, setShowPointsModal] = useState(false);
-  const [swapPoints, setSwapPoints] = useState(0);
-  const [redeemPoints, setRedeemPoints] = useState(0);
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
@@ -89,32 +81,13 @@ const ItemDetail = () => {
       await dispatch(createSwap({
         recipientItemId: itemId,
         recipientUserId: recipientUserId,
-        points: swapPoints
+        initiatorItemId: null // This will need to be selected by user
       })).unwrap();
       
       setShowSwapModal(false);
       navigate('/dashboard?tab=swaps');
     } catch (err) {
       setError(err.message || 'Failed to create swap request');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleRedeemPoints = async () => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-
-    setActionLoading(true);
-    try {
-      // This would be implemented when points redemption is added
-      console.log('Redeeming points:', redeemPoints);
-      setShowPointsModal(false);
-      // Navigate to success page or dashboard
-    } catch (err) {
-      setError(err.message || 'Failed to redeem points');
     } finally {
       setActionLoading(false);
     }
@@ -241,10 +214,6 @@ const ItemDetail = () => {
                   {availability.status}
                 </div>
               </div>
-
-              <p className="text-2xl font-bold text-green-600 mb-4">
-                ${item.price}
-              </p>
             </div>
 
             {/* Description */}
@@ -291,15 +260,15 @@ const ItemDetail = () => {
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
                   <FiUser className="w-6 h-6 text-green-600" />
                 </div>
-                                 <div>
-                   <p className="font-medium text-gray-900">
-                     {uploader?.name || (typeof item.user === 'object' ? item.user.name : 'Unknown User')}
-                   </p>
-                   <p className="text-sm text-gray-500 flex items-center">
-                     <FiMapPin className="w-4 h-4 mr-1" />
-                     {uploader?.profile?.location || item.location || 'Location not specified'}
-                   </p>
-                 </div>
+                <div>
+                  <p className="font-medium text-gray-900">
+                    {uploader?.name || (typeof item.user === 'object' ? item.user.name : 'Unknown User')}
+                  </p>
+                  <p className="text-sm text-gray-500 flex items-center">
+                    <FiMapPin className="w-4 h-4 mr-1" />
+                    {uploader?.profile?.location || item.location || 'Location not specified'}
+                  </p>
+                </div>
               </div>
               
               {uploader && (
@@ -325,29 +294,20 @@ const ItemDetail = () => {
               <div className="bg-white rounded-lg p-6 shadow-sm">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Get This Item</h3>
                 <div className="space-y-3">
-                                     <button
-                     onClick={() => setShowSwapModal(true)}
-                     disabled={!user || user._id === (typeof item.user === 'string' ? item.user : item.user._id)}
-                     className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                   >
-                     <FiPackage className="w-5 h-5 mr-2" />
-                     Request Swap
-                   </button>
-                   
-                   <button
-                     onClick={() => setShowPointsModal(true)}
-                     disabled={!user || user._id === (typeof item.user === 'string' ? item.user : item.user._id)}
-                     className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                   >
-                     <FiGift className="w-5 h-5 mr-2" />
-                     Redeem with Points
-                   </button>
-                   
-                   {(!user || user._id === (typeof item.user === 'string' ? item.user : item.user._id)) && (
-                     <p className="text-sm text-gray-500 text-center">
-                       {!user ? 'Please log in to interact with this item' : 'You cannot swap with your own item'}
-                     </p>
-                   )}
+                  <button
+                    onClick={() => setShowSwapModal(true)}
+                    disabled={!user || user._id === (typeof item.user === 'string' ? item.user : item.user._id)}
+                    className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  >
+                    <FiPackage className="w-5 h-5 mr-2" />
+                    Swap with Item
+                  </button>
+                  
+                  {(!user || user._id === (typeof item.user === 'string' ? item.user : item.user._id)) && (
+                    <p className="text-sm text-gray-500 text-center">
+                      {!user ? 'Please log in to interact with this item' : 'You cannot swap with your own item'}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -360,22 +320,8 @@ const ItemDetail = () => {
             <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Swap</h3>
               <p className="text-gray-600 mb-4">
-                You're requesting to swap for "{item.title}". You'll need to offer an item in return.
+                You're requesting to swap for "{item.name}". You'll need to offer an item in return.
               </p>
-              
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Additional Points (Optional)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={swapPoints}
-                  onChange={(e) => setSwapPoints(parseInt(e.target.value) || 0)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="0"
-                />
-              </div>
               
               <div className="flex space-x-3">
                 <button
@@ -390,52 +336,6 @@ const ItemDetail = () => {
                   className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
                 >
                   {actionLoading ? 'Sending...' : 'Send Request'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Points Redemption Modal */}
-        {showPointsModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Redeem with Points</h3>
-              <p className="text-gray-600 mb-4">
-                Redeem "{item.title}" using your points balance.
-              </p>
-              
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Points to Redeem
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max={user?.points || 0}
-                  value={redeemPoints}
-                  onChange={(e) => setRedeemPoints(parseInt(e.target.value) || 0)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="0"
-                />
-                <p className="text-sm text-gray-500 mt-1">
-                  Your balance: {user?.points || 0} points
-                </p>
-              </div>
-              
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => setShowPointsModal(false)}
-                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleRedeemPoints}
-                  disabled={actionLoading || redeemPoints <= 0}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
-                >
-                  {actionLoading ? 'Processing...' : 'Redeem Item'}
                 </button>
               </div>
             </div>
