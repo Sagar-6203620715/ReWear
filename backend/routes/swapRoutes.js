@@ -28,7 +28,7 @@ router.post("/", protect, async (req, res) => {
       _id: initiatorItemId,
       user: req.user.id,
       isActive: true,
-      status: { $in: ['approved', 'available'] }
+      status: { $in: ['approved', 'available', 'pending'] }
     });
     if (!initiatorItem) {
       return res.status(400).json({ message: "You need to select a valid item to offer for swap" });

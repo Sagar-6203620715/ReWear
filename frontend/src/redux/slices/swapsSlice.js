@@ -32,6 +32,8 @@ export const createSwap = createAsyncThunk(
   async (swapData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('userToken');
+      console.log('Creating swap with data:', swapData);
+      
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/swaps`,
         swapData,
@@ -42,6 +44,9 @@ export const createSwap = createAsyncThunk(
       
       return response.data.swap;
     } catch (error) {
+      console.error('Swap creation error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
       return rejectWithValue(error.response?.data?.message || 'Failed to create swap');
     }
   }

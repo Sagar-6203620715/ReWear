@@ -27,10 +27,18 @@ const ItemDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [showSwapModal, setShowSwapModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [userItems, setUserItems] = useState([]);
+  const [selectedItemId, setSelectedItemId] = useState('');
 
   useEffect(() => {
     fetchItemDetails();
   }, [itemId]);
+
+  useEffect(() => {
+    if (showSwapModal && user) {
+      fetchUserItems();
+    }
+  }, [showSwapModal, user]);
 
   const fetchItemDetails = async () => {
     try {
@@ -65,9 +73,57 @@ const ItemDetail = () => {
     }
   };
 
+  const fetchUserItems = async () => {
+    try {
+      const token = localStorage.getItem('userToken');
+      console.log('Fetching user items for user:', user._id);
+      console.log('Token:', token ? 'Present' : 'Missing');
+      
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/items/user/${user._id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
+      console.log('User items response:', response.data);
+      
+      // Log each item's details
+      response.data.items.forEach((item, index) => {
+        console.log(`Item ${index + 1}:`, {
+          name: item.name,
+          status: item.status,
+          isActive: item.isActive,
+          user: item.user
+        });
+      });
+      
+      // Filter for available items only
+      const availableItems = response.data.items.filter(item => 
+        item.isActive && ['approved', 'available', 'pending'].includes(item.status)
+      );
+      
+      console.log('Available items after filtering:', availableItems);
+      setUserItems(availableItems);
+      
+      // Set the first available item as default selection
+      if (availableItems.length > 0) {
+        setSelectedItemId(availableItems[0]._id);
+      }
+    } catch (err) {
+      console.error('Failed to fetch user items:', err);
+      console.error('Error response:', err.response?.data);
+    }
+  };
+
   const handleSwapRequest = async () => {
     if (!user) {
       navigate('/login');
+      return;
+    }
+
+    if (!selectedItemId) {
+      setError('Please select an item to offer for swap');
       return;
     }
 
@@ -81,7 +137,7 @@ const ItemDetail = () => {
       await dispatch(createSwap({
         recipientItemId: itemId,
         recipientUserId: recipientUserId,
-        initiatorItemId: null // This will need to be selected by user
+        initiatorItemId: selectedItemId
       })).unwrap();
       
       setShowSwapModal(false);
@@ -320,8 +376,39 @@ const ItemDetail = () => {
             <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Swap</h3>
               <p className="text-gray-600 mb-4">
-                You're requesting to swap for "{item.name}". You'll need to offer an item in return.
+                You're requesting to swap for "{item.name}". Select an item to offer in return.
               </p>
+              
+              {userItems.length === 0 ? (
+                <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm text-yellow-700">
+                    You need to list an item first to make a swap request.
+                  </p>
+                  <Link
+                    to="/list-item"
+                    className="inline-block mt-2 text-sm text-yellow-800 underline hover:no-underline"
+                  >
+                    List an item now
+                  </Link>
+                </div>
+              ) : (
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select Item to Offer
+                  </label>
+                  <select
+                    value={selectedItemId}
+                    onChange={(e) => setSelectedItemId(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    {userItems.map((userItem) => (
+                      <option key={userItem._id} value={userItem._id}>
+                        {userItem.name} ({userItem.condition})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               
               <div className="flex space-x-3">
                 <button
@@ -332,7 +419,7 @@ const ItemDetail = () => {
                 </button>
                 <button
                   onClick={handleSwapRequest}
-                  disabled={actionLoading}
+                  disabled={actionLoading || userItems.length === 0}
                   className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
                 >
                   {actionLoading ? 'Sending...' : 'Send Request'}
