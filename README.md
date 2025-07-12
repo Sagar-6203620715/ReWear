@@ -5,39 +5,37 @@ A modern, responsive web application that enables users to exchange unused cloth
 ## 🚀 Features
 
 ### Core Features
-- **Clothing Discovery**: Browse clothing items by categories, sizes, and styles
+- **Item Discovery**: Browse clothing items by categories, sizes, and styles
 - **Advanced Filtering**: Sort items by size, brand, condition, style, and more
-- **Real-time Chat**: Discuss clothing items with other users in category-specific chat rooms
 - **Item Ratings & Reviews**: Rate and review clothing items with detailed feedback
 - **Responsive Design**: Fully responsive design that works on all devices
 - **Admin Panel**: Comprehensive admin interface for managing content
 
 ### User Features
 - **User Authentication**: Secure login/register system with JWT
-- **Clothing Comparison**: Compare clothing items side-by-side
 - **Direct Swaps**: Exchange clothing items directly with other users
 - **Point System**: Earn and redeem points for clothing exchanges
 - **Search Functionality**: Advanced search with filters
 - **Mobile-First Design**: Optimized for mobile and tablet devices
+- **User Dashboard**: Manage profile, items, and swap history
+- **Image Upload**: Upload item images with Cloudinary integration
 
 ### Admin Features
 - **User Management**: Manage user accounts and permissions
-- **Clothing Management**: Add, edit, and delete clothing items
-- **Category Management**: Organize clothing by categories
-- **Section Management**: Categorize clothing into sections
-- **Content Moderation**: Moderate reviews and discussions
+- **Item Moderation**: Approve, reject, or remove inappropriate items
+- **Analytics Dashboard**: View platform statistics and user activity
+- **Content Moderation**: Moderate items and user content
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React 19** - Modern React with latest features
+- **React 18** - Modern React with latest features
 - **Vite** - Fast build tool and development server
 - **Tailwind CSS** - Utility-first CSS framework
 - **Redux Toolkit** - State management
 - **React Router** - Client-side routing
 - **React Icons** - Icon library
 - **Axios** - HTTP client
-- **Socket.io Client** - Real-time communication
 - **Swiper** - Touch slider component
 
 ### Backend
@@ -46,7 +44,6 @@ A modern, responsive web application that enables users to exchange unused cloth
 - **MongoDB** - NoSQL database
 - **Mongoose** - MongoDB object modeling
 - **JWT** - Authentication
-- **Socket.io** - Real-time communication
 - **Cloudinary** - Image upload and management
 - **Multer** - File upload handling
 - **bcryptjs** - Password hashing
@@ -65,7 +62,7 @@ A modern, responsive web application that enables users to exchange unused cloth
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd course_comparator
+   cd Course-Comparator
    ```
 
 2. **Install backend dependencies**
@@ -77,7 +74,7 @@ A modern, responsive web application that enables users to exchange unused cloth
 3. **Environment Configuration**
    Create a `.env` file in the backend directory:
    ```env
-   PORT=5000
+   PORT=9000
    MONGO_URI=your_mongodb_connection_string
    JWT_SECRET=your_jwt_secret_key
    CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
@@ -102,7 +99,7 @@ A modern, responsive web application that enables users to exchange unused cloth
 2. **Environment Configuration**
    Create a `.env` file in the frontend directory:
    ```env
-   VITE_BACKEND_URL=http://localhost:5000
+   VITE_BACKEND_URL=http://localhost:9000
    ```
 
 3. **Start the frontend development server**
@@ -118,11 +115,10 @@ cd backend
 npm run seed
 ```
 
-### Create Admin User
-```bash
-cd backend
-npm run make-admin
-```
+This will create:
+- Sample users (including admin user)
+- Sample clothing items
+- Initial database structure
 
 ## 🚀 Development
 
@@ -132,7 +128,6 @@ npm run make-admin
 - `npm run dev` - Start development server with nodemon
 - `npm start` - Start production server
 - `npm run seed` - Seed database with initial data
-- `npm run make-admin` - Create admin user
 - `npm test` - Run tests
 - `npm run lint` - Lint code
 - `npm run format` - Format code
@@ -148,140 +143,95 @@ npm run make-admin
 ### Project Structure
 
 ```
-rewear/
+Course-Comparator/
 ├── backend/
-│   ├── config/
-│   │   └── db.js
-│   │   ├── data/
-│   │   │   ├── clothing.js
-│   │   │   ├── category.js
-│   │   │   └── section.js
-│   │   ├── middleware/
-│   │   │   └── authMiddleware.js
-│   │   ├── models/
-│   │   │   ├── Chat.js
-│   │   │   ├── Clothing.js
-│   │   │   ├── Category.js
-│   │   │   ├── Review.js
-│   │   │   ├── Section.js
-│   │   │   ├── Subscriber.js
-│   │   │   └── Users.js
-│   │   ├── routes/
-│   │   │   ├── adminRoutes.js
-│   │   │   ├── chatRoutes.js
-│   │   │   ├── clothingAdminRoutes.js
-│   │   │   ├── clothingRoutes.js
-│   │   │   ├── categoryAdminRoutes.js
-│   │   │   ├── categoryRoutes.js
-│   │   │   ├── sectionRoutes.js
-│   │   │   ├── subscriberRoutes.js
-│   │   │   ├── uploadRoutes.js
-│   │   │   └── userRoutes.js
-│   │   ├── server.js
-│   │   └── package.json
-│   ├── frontend/
-│   │   ├── src/
-│   │   │   ├── components/
-│   │   │   │   ├── Admin/
-│   │   │   │   ├── Chat/
-│   │   │   │   ├── Common/
-│   │   │   │   ├── Clothing/
-│   │   │   │   └── Layout/
-│   │   │   │   ├── pages/
-│   │   │   │   ├── redux/
-│   │   │   │   │   └── slices/
-│   │   │   │   ├── assets/
-│   │   │   │   ├── App.jsx
-│   │   │   │   └── main.jsx
-│   │   │   │   ├── package.json
-│   │   │   │   └── vite.config.js
-│   │   │   └── README.md
-│   └── README.md
+│   ├── data/
+│   │   └── items.js
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   ├── models/
+│   │   ├── Item.js
+│   │   ├── Swap.js
+│   │   ├── Subscriber.js
+│   │   └── Users.js
+│   ├── routes/
+│   │   ├── adminRoutes.js
+│   │   ├── itemRoutes.js
+│   │   ├── swapRoutes.js
+│   │   ├── subscriberRoutes.js
+│   │   ├── uploadRoutes.js
+│   │   └── userRoutes.js
+│   ├── server.js
+│   ├── seeder.js
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Admin/
+│   │   │   ├── Common/
+│   │   │   ├── Items/
+│   │   │   ├── Layout/
+│   │   │   └── User/
+│   │   ├── pages/
+│   │   ├── redux/
+│   │   │   └── slices/
+│   │   ├── assets/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js
+└── README.md
 ```
 
-## 🔧 Configuration
+## 🔧 Key Features Implementation
 
-### Environment Variables
+### Item Management
+- **Browse Items**: View all available clothing items with filtering and sorting
+- **Item Details**: Detailed view with image gallery, description, and uploader info
+- **List Items**: Upload new items with images and descriptions
+- **Item Status**: Track item availability and swap status
 
-#### Backend (.env)
-- `PORT` - Server port (default: 5000)
-- `MONGO_URI` - MongoDB connection string
-- `JWT_SECRET` - JWT secret key
-- `CLOUDINARY_CLOUD_NAME` - Cloudinary cloud name
-- `CLOUDINARY_API_KEY` - Cloudinary API key
-- `CLOUDINARY_API_SECRET` - Cloudinary API secret
-- `NODE_ENV` - Environment (development/production)
+### Swap System
+- **Request Swaps**: Send swap requests to item owners
+- **Manage Swaps**: View ongoing and completed swaps
+- **Swap History**: Track all swap activities
+- **Points System**: Earn points for successful swaps
 
-#### Frontend (.env)
-- `VITE_BACKEND_URL` - Backend API URL
+### User System
+- **Authentication**: Secure login/register with JWT
+- **User Profiles**: Manage personal information and preferences
+- **Dashboard**: Overview of items, swaps, and points
+- **Role-based Access**: Different permissions for users and admins
 
-## 🧪 Testing
+### Admin Panel
+- **Item Moderation**: Approve/reject new item listings
+- **User Management**: Manage user accounts and permissions
+- **Analytics**: View platform statistics and user activity
+- **Content Management**: Remove inappropriate content
 
-### Backend Tests
-```bash
-cd backend
-npm test
-```
+## 🌟 Getting Started
 
-### Frontend Tests
-```bash
-cd frontend
-npm test
-```
-
-## 📱 Responsive Design
-
-The application is fully responsive and optimized for:
-- **Mobile**: 320px - 768px
-- **Tablet**: 768px - 1024px
-- **Desktop**: 1024px+
-
-## 🔒 Security Features
-
-- JWT-based authentication
-- Password hashing with bcrypt
-- CORS protection
-- Helmet security headers
-- Rate limiting
-- Input validation
-- XSS protection
-
-## 🚀 Deployment
-
-### Backend Deployment
-1. Set up environment variables
-2. Build the application
-3. Deploy to your preferred platform (Heroku, Vercel, etc.)
-
-### Frontend Deployment
-1. Build the application: `npm run build`
-2. Deploy the `dist` folder to your hosting platform
+1. **Clone and setup the project** (see Installation section)
+2. **Configure environment variables** for both frontend and backend
+3. **Start the backend server** (`npm run dev` in backend directory)
+4. **Start the frontend server** (`npm run dev` in frontend directory)
+5. **Seed the database** (`npm run seed` in backend directory)
+6. **Access the application** at `http://localhost:5173`
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 License
+## 📝 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🆘 Support
+## 🙏 Acknowledgments
 
-For support and questions:
-- Create an issue in the repository
-- Contact the development team
-
-## 🔄 Updates
-
-Stay updated with the latest features and improvements by:
-- Following the repository
-- Checking the releases page
-- Reading the changelog
-
----
-
-**Built with ❤️ by the ReWear Team**
+- Built with modern web technologies
+- Designed for sustainability and community building
+- Promotes circular fashion economy
