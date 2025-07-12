@@ -11,6 +11,10 @@ import ListItem from './pages/ListItem';
 import UserDashboard from './pages/UserDashboard';
 import EditProfile from './pages/EditProfile';
 import ItemDetail from './pages/ItemDetail';
+import ContactUs from './pages/ContactUs';
+import AboutUs from './pages/AboutUs';
+import FAQs from './pages/FAQs';
+import Features from './pages/Features';
 import NotFound from './pages/NotFound';
 import AdminLayoutNew from './components/Admin/AdminLayoutNew';
 import AdminDashboard from './pages/AdminDashboard';
@@ -93,6 +97,10 @@ const App = () => {
               <Route path="/dashboard" element={<UserDashboard />} />
               <Route path="/edit-profile" element={<EditProfile />} />
               <Route path="/item/:itemId" element={<ItemDetail />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/faqs" element={<FAQs />} />
+              <Route path="/features" element={<Features />} />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/not-authorized" element={<NotAuthorized />} />
