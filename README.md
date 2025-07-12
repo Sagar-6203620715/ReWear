@@ -283,4 +283,4 @@ Stay updated with the latest features and improvements by:
 
 ---
 
-**Built with ❤️ by the Course Comparator Team**
+****
