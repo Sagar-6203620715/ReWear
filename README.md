@@ -4,7 +4,7 @@ A modern, responsive web application that enables users to exchange unused cloth
 
 ## 🚀 Feature
 
-### Core Features
+### Core Feature
 - **Item Discovery**: Browse clothing items by categories, sizes, and styles
 - **Advanced Filtering**: Sort items by size, brand, condition, style, and more
 - **Item Ratings & Reviews**: Rate and review clothing items with detailed feedback
