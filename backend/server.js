@@ -16,6 +16,9 @@ const app = express();
 const PORT = process.env.PORT || 9000;
 const MONGO_URI = process.env.MONGO_URI;
 
+// Track last DB error for diagnostics
+let lastDbError = null;
+
 // CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
@@ -93,7 +96,27 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 if (MONGO_URI) {
   mongoose.connect(MONGO_URI)
     .then(() => console.log("MongoDB connected"))
-    .catch(err => console.error("MongoDB connection error:", err));
+    .catch(err => {
+      lastDbError = err;
+      console.error("MongoDB connection error:", err);
+    });
+
+  // Connection event listeners to keep diagnostics up to date
+  mongoose.connection.on('error', (err) => {
+    lastDbError = err;
+    console.error('MongoDB connection error event:', err);
+  });
+  mongoose.connection.on('connected', () => {
+    lastDbError = null;
+    console.log('MongoDB connected event');
+  });
+  mongoose.connection.on('reconnected', () => {
+    lastDbError = null;
+    console.log('MongoDB reconnected event');
+  });
+  mongoose.connection.on('disconnected', () => {
+    console.warn('MongoDB disconnected event');
+  });
 } else {
   console.warn("MONGO_URI not set. Skipping DB connection.");
 }
@@ -107,6 +130,28 @@ app.use("/api/swaps", swapRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
+});
+
+// Diagnostics: DB status endpoint (safe to expose; returns no secrets)
+app.get("/api/db-status", (req, res) => {
+  const stateCode = mongoose.connection.readyState;
+  const stateNameMap = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting'
+  };
+  res.json({
+    readyState: stateCode,
+    state: stateNameMap[stateCode] || String(stateCode),
+    host: mongoose.connection?.host || null,
+    name: mongoose.connection?.name || null,
+    error: lastDbError ? {
+      message: lastDbError.message,
+      code: lastDbError.code || null,
+      name: lastDbError.name || null
+    } : null
+  });
 });
 
 app.get("/", (req, res) => {
