@@ -1,8 +1,13 @@
-# Backend Dockerfile
-FROM node:18-alpine
+# Backend Dockerfile for Render
+FROM node:22-alpine
 WORKDIR /app
+# Install dependencies
 COPY package*.json ./
-RUN npm install --production
+RUN npm ci --only=production || npm install --only=production
+# Copy source
 COPY . .
-EXPOSE 3000
-CMD ["npm", "run", "start:prod"] 
+# Environment & port
+ENV NODE_ENV=production
+EXPOSE 10000
+# Start server (Render will set PORT env)
+CMD ["npm", "start"]
