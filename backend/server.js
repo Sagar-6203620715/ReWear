@@ -128,7 +128,25 @@ app.use("/api/items", itemRoutes);
 app.use("/api/swaps", swapRoutes);
 
 app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({ 
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    port: process.env.PORT || PORT,
+    environment: process.env.NODE_ENV || 'development',
+    mongoUri: MONGO_URI ? 'set' : 'not set'
+  });
+});
+
+// Port check endpoint for debugging
+app.get("/port-check", (req, res) => {
+  res.json({
+    message: "Port check endpoint",
+    serverPort: PORT,
+    envPort: process.env.PORT,
+    finalPort: process.env.PORT || PORT,
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Diagnostics: DB status endpoint (safe to expose; returns no secrets)
@@ -177,7 +195,13 @@ app.get("/api/dns-check", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.json({ message: "ReWear API" });
+  res.json({ 
+    message: "ReWear API",
+    status: "running",
+    timestamp: new Date().toISOString(),
+    port: process.env.PORT || PORT,
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
 const server = http.createServer(app);
@@ -240,12 +264,13 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Server listening (only in development)
-if (process.env.NODE_ENV !== 'production') {
-  server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}
+// Server listening (always listen for deployment platforms)
+const port = process.env.PORT || PORT;
+server.listen(port, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${port}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔌 Listening on all network interfaces (0.0.0.0:${port})`);
+});
 
 // Export for deployment platforms
 module.exports = app;
