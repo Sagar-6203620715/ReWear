@@ -37,6 +37,14 @@ const corsOptions = {
     // Add FRONTEND_URL from environment if it exists
     if (process.env.FRONTEND_URL) {
       allowedOrigins.push(process.env.FRONTEND_URL);
+      // Also add without trailing slash if it has one
+      if (process.env.FRONTEND_URL.endsWith('/')) {
+        allowedOrigins.push(process.env.FRONTEND_URL.slice(0, -1));
+      } else {
+        // Add with trailing slash if it doesn't have one
+        allowedOrigins.push(process.env.FRONTEND_URL + '/');
+      }
+      console.log('🔗 CORS: Added frontend URLs:', allowedOrigins.slice(-2));
     }
     
     // Add any additional frontend URLs from environment
@@ -216,6 +224,13 @@ const socketCorsOrigins = [
 // Add environment variables to Socket.IO CORS
 if (process.env.FRONTEND_URL) {
   socketCorsOrigins.push(process.env.FRONTEND_URL);
+  // Also add without trailing slash if it has one
+  if (process.env.FRONTEND_URL.endsWith('/')) {
+    socketCorsOrigins.push(process.env.FRONTEND_URL.slice(0, -1));
+  } else {
+    // Add with trailing slash if it doesn't have one
+    socketCorsOrigins.push(process.env.FRONTEND_URL + '/');
+  }
 }
 
 if (process.env.ADDITIONAL_FRONTEND_URLS) {
