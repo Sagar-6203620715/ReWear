@@ -88,8 +88,8 @@ router.get("/user", protect, async (req, res) => {
     .populate([
       { path: 'initiator', select: 'name' },
       { path: 'recipient', select: 'name' },
-      { path: 'initiatorItem', select: 'title image condition' },
-      { path: 'recipientItem', select: 'title image condition' }
+      { path: 'initiatorItem', select: 'name images condition' },
+      { path: 'recipientItem', select: 'name images condition' }
     ])
     .sort({ createdAt: -1 });
 
@@ -317,8 +317,8 @@ router.post("/:id/message", protect, async (req, res) => {
     await swap.populate([
       { path: 'initiator', select: 'name' },
       { path: 'recipient', select: 'name' },
-      { path: 'initiatorItem', select: 'title image' },
-      { path: 'recipientItem', select: 'title image' },
+      { path: 'initiatorItem', select: 'name images' },
+      { path: 'recipientItem', select: 'name images' },
       { path: 'messages.sender', select: 'name' }
     ]);
 

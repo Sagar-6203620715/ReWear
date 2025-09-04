@@ -294,23 +294,14 @@ router.get("/analytics", protect, admin, async (req, res) => {
       .populate("user", "name");
 
     const recentActivity = recentItems.map(item => ({
-      description: `New item "${item.title}" listed by ${item.user?.name || 'Unknown'}`,
+      description: `New item "${item.name}" listed by ${item.user?.name || 'Unknown'}`,
       timestamp: item.createdAt,
       type: 'item'
     }));
 
     // Calculate total revenue (from swaps)
-    const totalRevenue = await Swap.aggregate([
-      {
-        $match: { status: "accepted" }
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$points" }
-        }
-      }
-    ]);
+    // points field does not exist in Swap schema; set to 0 for now
+    const totalRevenue = [{ total: 0 }];
 
     res.json({
       totalItems,
