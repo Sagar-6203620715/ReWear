@@ -35,6 +35,14 @@ const App = () => {
   useEffect(() => {
     const checkBackendHealth = async () => {
       try {
+        // Check if backend URL is configured
+        if (!import.meta.env.VITE_BACKEND_URL) {
+          console.error('Backend URL not configured');
+          setBackendHealthy(false);
+          setIsLoading(false);
+          return;
+        }
+        
         const response = await fetch(API_ENDPOINTS.HEALTH);
         const data = await response.json();
         setBackendHealthy(data.status === "ok");

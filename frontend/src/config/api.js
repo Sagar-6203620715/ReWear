@@ -2,9 +2,14 @@
 // This handles both monorepo deployment (relative URLs) and separate deployment (environment variables)
 
 const getBackendUrl = () => {
-  // For monorepo deployment, use relative URL
   // For separate deployment, use environment variable
-  return import.meta.env.VITE_BACKEND_URL || '/api';
+  // This must be set in production
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  if (!backendUrl) {
+    console.error('VITE_BACKEND_URL environment variable is not set!');
+    throw new Error('Backend URL not configured. Please set VITE_BACKEND_URL environment variable.');
+  }
+  return backendUrl;
 };
 
 export const API_BASE_URL = getBackendUrl();

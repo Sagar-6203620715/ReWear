@@ -1,8 +1,8 @@
-const express =require("express");
-const User=require("../models/Users");
-const jwt=require("jsonwebtoken");
-const {protect}=require("../middleware/authMiddleware");
-const router=express.Router();
+const express = require("express");
+const User = require("../models/Users");
+const jwt = require("jsonwebtoken");
+const {protect} = require("../middleware/authMiddleware");
+const router = express.Router();
 
 
 router.post("/register",async(req,res)=>{

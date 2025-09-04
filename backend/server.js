@@ -43,11 +43,13 @@ const corsOptions = {
       allowedOrigins.push(...additionalUrls);
     }
     
-    // For monorepo deployment, allow same-origin requests
-    if (process.env.NODE_ENV === 'production' && !origin.includes('localhost')) {
-      // In production, allow requests from the same domain (monorepo)
-      console.log('CORS: Allowing same-origin request in production');
-      return callback(null, true);
+    // For separate deployments, allow requests from configured frontend URLs
+    if (process.env.NODE_ENV === 'production' && process.env.FRONTEND_URL) {
+      // Check if origin matches the configured frontend URL
+      if (origin === process.env.FRONTEND_URL) {
+        console.log('CORS: Allowing configured frontend URL in production');
+        return callback(null, true);
+      }
     }
     
     console.log('CORS check - Origin:', origin);
