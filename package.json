@@ -1,5 +1,24 @@
 {
-  "dependencies": {
-    "sonner": "^2.0.5"
+  "name": "rewear-monorepo",
+  "version": "1.0.0",
+  "description": "ReWear - Community Clothing Exchange Application (Monorepo)",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:frontend",
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "build:backend": "cd backend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "vercel-build": "npm install && cd backend && npm install && cd ../frontend && npm install && npm run build",
+    "start": "cd backend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": "22.x",
+    "npm": ">=9.0.0"
   }
 }
