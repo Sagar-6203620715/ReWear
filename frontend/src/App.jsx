@@ -26,6 +26,7 @@ import store from "./redux/store";
 import ErrorBoundary from "./components/Common/ErrorBoundary";
 import ProtectedAdminRoute from './components/Admin/ProtectedAdminRoute';
 import NotAuthorized from './pages/NotAuthorized';
+import { API_ENDPOINTS } from './config/api';
 
 const App = () => {
   const [backendHealthy, setBackendHealthy] = useState(true);
@@ -34,7 +35,7 @@ const App = () => {
   useEffect(() => {
     const checkBackendHealth = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/health`);
+        const response = await fetch(API_ENDPOINTS.HEALTH);
         const data = await response.json();
         setBackendHealthy(data.status === "ok");
       } catch (error) {

@@ -43,6 +43,13 @@ const corsOptions = {
       allowedOrigins.push(...additionalUrls);
     }
     
+    // For monorepo deployment, allow same-origin requests
+    if (process.env.NODE_ENV === 'production' && !origin.includes('localhost')) {
+      // In production, allow requests from the same domain (monorepo)
+      console.log('CORS: Allowing same-origin request in production');
+      return callback(null, true);
+    }
+    
     console.log('CORS check - Origin:', origin);
     console.log('CORS check - Allowed origins:', allowedOrigins);
     
