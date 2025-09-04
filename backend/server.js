@@ -31,10 +31,7 @@ const corsOptions = {
       'http://localhost:3000',
       'http://localhost:5173', 
       'http://127.0.0.1:3000',
-      'http://127.0.0.1:5173',
-      'https://course-comparator.netlify.app',
-      'https://your-frontend-domain.netlify.app',
-      'https://re-wear-yxzu.vercel.app'
+      'http://127.0.0.1:5173'
     ];
     
     // Add FRONTEND_URL from environment if it exists
@@ -189,10 +186,7 @@ const socketCorsOrigins = [
   'http://localhost:3000',
   'http://localhost:5173', 
   'http://127.0.0.1:3000',
-  'http://127.0.0.1:5173',
-  'https://course-comparator.netlify.app',
-  'https://your-frontend-domain.netlify.app',
-  'https://re-wear-yxzu.vercel.app'
+  'http://127.0.0.1:5173'
 ];
 
 // Add environment variables to Socket.IO CORS
@@ -246,12 +240,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// For Vercel serverless deployment
+// Server listening (only in development)
 if (process.env.NODE_ENV !== 'production') {
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
 }
 
-// Export for Vercel
+// Export for deployment platforms
 module.exports = app;

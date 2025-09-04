@@ -16,126 +16,116 @@ C:\Projects\Re\ReWear\           ← ✅ YOUR ACTUAL PROJECT ROOT
 │   ├── src/                      ← React source code
 │   ├── package.json              ← Frontend dependencies
 │   ├── vite.config.js            ← Build configuration
+│   ├── netlify.toml              ← Netlify configuration
 │   └── dist/                     ← Build output (after build)
-├── package.json                  ← Root package.json (monorepo scripts)
-├── vercel.json                   ← ✅ Vercel configuration
+├── package.json                  ← Root package.json (development scripts)
 └── README.md                     ← Project documentation
 ```
 
 ## 🚨 **What Was Wrong (Fixed)**
 
-- ❌ **Duplicate `backend/` folder** at `C:\Projects\Re\` (removed)
-- ❌ **Multiple `vercel.json` files** (removed)
+- ❌ **Vercel-specific configurations** (removed)
+- ❌ **Monorepo build scripts** (removed)
+- ❌ **Deployment scripts** (removed)
 - ❌ **Conflicting deployment configurations** (cleaned up)
-- ❌ **Working in wrong directory** (should be `C:\Projects\Re\ReWear`)
 
 ## ✅ **Correct Deployment Approach**
 
-### **Option 1: Deploy from ReWear Directory (Recommended)**
+### **Option 1: Render + Netlify (Recommended)**
 
 #### **Step 1: Navigate to Correct Directory**
 ```bash
 cd C:\Projects\Re\ReWear
 ```
 
-#### **Step 2: Deploy Backend First**
-1. **Go to [vercel.com](https://vercel.com)**
-2. **Click "New Project"**
-3. **Import your GitHub repository**
+#### **Step 2: Deploy Backend to Render**
+1. **Go to [render.com](https://render.com)**
+2. **Click "New +" → "Web Service"**
+3. **Connect your GitHub repository**
 4. **Set Root Directory to `backend`** ⚠️ **CRITICAL!**
 
 #### **Step 3: Configure Backend Project**
-1. **Project Name**: `rewear-backend`
-2. **Framework Preset**: Select **"Other"**
+1. **Service Name**: `rewear-backend`
+2. **Environment**: **Node**
 3. **Root Directory**: **`backend`** (not `/` or `/backend`)
-4. **Build Command**: Leave empty ✅
-5. **Output Directory**: Leave empty ✅
-6. **Install Command**: Leave empty ✅
+4. **Build Command**: `npm install`
+5. **Start Command**: `npm start`
 
 #### **Step 4: Set Environment Variables**
 ```
 MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/rewear?retryWrites=true&w=majority
 JWT_SECRET=your_super_secret_jwt_key_at_least_32_characters_long
 NODE_ENV=production
-FRONTEND_URL=https://your-frontend-domain.vercel.app
+FRONTEND_URL=https://your-frontend-domain.netlify.app
 ```
 
 #### **Step 5: Deploy Backend**
-1. **Click "Deploy"**
-2. **Should work without dist folder errors**
+1. **Click "Create Web Service"**
+2. **Wait for deployment to complete**
+3. **Note your backend URL** (e.g., `https://rewear-backend.onrender.com`)
 
 ---
 
-### **Option 2: Deploy from Root with Current vercel.json**
+### **Option 2: Deploy Frontend to Netlify**
 
-#### **Step 1: Use Current Configuration**
-Your current `vercel.json` is already configured for monorepo deployment:
+#### **Step 1: Create Netlify Site**
+1. **Go to [app.netlify.com](https://app.netlify.com)**
+2. **Click "Add new site" → "Import an existing project"**
+3. **Connect your GitHub repository**
 
-```json
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "backend/server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "frontend/dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/backend/server.js"
-    },
-    {
-      "src": "/health",
-      "dest": "/backend/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/$1"
-    }
-  ]
-}
+#### **Step 2: Configure Frontend Project**
+1. **Base directory**: `frontend`
+2. **Build command**: `npm run build`
+3. **Publish directory**: `dist`
+
+#### **Step 3: Set Environment Variables**
+```
+VITE_BACKEND_URL=https://your-backend-url.onrender.com
 ```
 
-#### **Step 2: Deploy from Root**
-1. **Set Root Directory to `/`** (root of ReWear)
-2. **Deploy with current configuration**
+#### **Step 4: Deploy Frontend**
+1. **Click "Deploy site"**
+2. **Wait for deployment to complete**
+3. **Note your frontend URL** (e.g., `https://rewear.netlify.app`)
 
 ---
 
-## 🎯 **My Recommendation: Use Option 1**
+### **Option 3: Update CORS Settings**
 
-**Why Option 1 is better:**
-- ✅ **Cleaner separation** - No frontend interference
-- ✅ **Faster builds** - Only backend dependencies
-- ✅ **No conflicts** - Isolated deployment
-- ✅ **Easier debugging** - Clear separation of concerns
+#### **Step 1: Update Backend Environment**
+1. **Go back to your Render backend project**
+2. **Add/Update environment variable**:
+   ```
+   FRONTEND_URL=https://your-frontend-url.netlify.app
+   ```
+3. **Redeploy backend**
 
----
+#### **Step 2: Test Integration**
+1. **Visit your frontend URL**
+2. **Check browser console for CORS errors**
+3. **Test API endpoints**
 
-## 🔧 **Current Status**
+## 🔧 **Environment Variables Summary**
 
-- ✅ **Duplicate files removed**
-- ✅ **Project structure cleaned up**
-- ✅ **Correct `vercel.json` in place**
-- ✅ **Ready for deployment**
+### **Backend (Render)**
+```env
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/rewear?retryWrites=true&w=majority
+JWT_SECRET=your_super_secret_jwt_key_at_least_32_characters_long
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+NODE_ENV=production
+FRONTEND_URL=https://your-frontend-url.netlify.app
+```
 
----
+### **Frontend (Netlify)**
+```env
+VITE_BACKEND_URL=https://your-backend-url.onrender.com
+```
 
-## 🚀 **Next Steps**
+## 🎯 **Expected URLs After Deployment**
 
-1. **Make sure you're in the correct directory**: `C:\Projects\Re\ReWear`
-2. **Use Option 1** (deploy from `backend` subdirectory)
-3. **Set Root Directory to `backend`** in Vercel
-4. **Deploy and test**
+- **Backend**: `https://rewear-backend.onrender.com`
+- **Frontend**: `https://rewear.netlify.app`
 
----
-
-**Your project structure is now clean and ready for deployment!**
+**Estimated Time to Deploy: 15-20 minutes**

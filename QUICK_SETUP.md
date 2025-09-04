@@ -86,38 +86,21 @@ VITE_BACKEND_URL=https://your-backend-domain.com
 
 ## 🚀 Quick Deployment Commands
 
-### For Vercel (Recommended)
+### For Render + Netlify (Recommended)
 
-1. **Install Vercel CLI:**
-   ```bash
-   npm i -g vercel
-   ```
+1. **Deploy Backend to Render:**
+   - Go to [Render](https://render.com)
+   - Connect your GitHub repository
+   - Set root directory to `backend`
+   - Add environment variables
+   - Deploy
 
-2. **Deploy Backend:**
-   ```bash
-   cd backend
-   vercel --prod
-   ```
-
-3. **Deploy Frontend:**
-   ```bash
-   cd frontend
-   vercel --prod
-   ```
-
-### For Railway
-
-1. **Install Railway CLI:**
-   ```bash
-   npm i -g @railway/cli
-   ```
-
-2. **Login and Deploy:**
-   ```bash
-   railway login
-   railway init
-   railway up
-   ```
+2. **Deploy Frontend to Netlify:**
+   - Go to [Netlify](https://app.netlify.com)
+   - Connect your GitHub repository
+   - Set root directory to `frontend`
+   - Add backend URL to environment
+   - Deploy
 
 ## 🔍 Test Your Setup
 

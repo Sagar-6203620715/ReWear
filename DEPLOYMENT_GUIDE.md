@@ -11,7 +11,7 @@ Before deploying, ensure you have:
 3. **GitHub Account** (for code hosting)
 4. **Domain Name** (optional, for custom URLs)
 
-## 🎯 Quick Start - Option 1: Vercel (Recommended)
+## 🎯 Quick Start - Option 1: Render + Netlify (Recommended)
 
 ### Step 1: Prepare Your Code
 
@@ -32,15 +32,14 @@ Before deploying, ensure you have:
    - Create a free account
    - Get your cloud name, API key, and API secret
 
-### Step 2: Deploy Backend to Vercel
+### Step 2: Deploy Backend to Render
 
-1. **Go to [Vercel](https://vercel.com)** and sign up with GitHub
+1. **Go to [Render](https://render.com)** and sign up with GitHub
 2. **Import your repository**
 3. **Configure the backend deployment**:
    - Set root directory to: `backend`
    - Build command: `npm install`
-   - Output directory: Leave empty
-   - Install command: `npm install`
+   - Start command: `npm start`
 
 4. **Add Environment Variables**:
    ```
@@ -52,31 +51,30 @@ Before deploying, ensure you have:
    NODE_ENV=production
    ```
 
-5. **Deploy** and note your backend URL (e.g., `https://rewear-backend.vercel.app`)
+5. **Deploy** and note your backend URL (e.g., `https://rewear-backend.onrender.com`)
 
-### Step 3: Deploy Frontend to Vercel
+### Step 3: Deploy Frontend to Netlify
 
-1. **Create a new Vercel project** for the frontend
-2. **Import the same repository**
+1. **Go to [Netlify](https://app.netlify.com)** and sign up with GitHub
+2. **Import your repository**
 3. **Configure the frontend deployment**:
    - Set root directory to: `frontend`
    - Build command: `npm run build`
-   - Output directory: `dist`
-   - Install command: `npm install`
+   - Publish directory: `dist`
 
 4. **Add Environment Variables**:
    ```
-   VITE_BACKEND_URL=https://your-backend-url.vercel.app
+   VITE_BACKEND_URL=https://your-backend-url.onrender.com
    ```
 
 5. **Deploy** and note your frontend URL
 
 ### Step 4: Update CORS Settings
 
-1. **Go back to your backend Vercel project**
+1. **Go back to your backend Render project**
 2. **Add the frontend URL to environment variables**:
    ```
-   FRONTEND_URL=https://your-frontend-url.vercel.app
+   FRONTEND_URL=https://your-frontend-url.netlify.app
    ```
 3. **Redeploy the backend**
 

@@ -5,38 +5,37 @@
 Your ReWear project is now ready for deployment! Here's what we've set up:
 
 ### ✅ Configuration Files Created
-- `backend/vercel.json` - Vercel backend configuration
+- `backend/Dockerfile` - Docker configuration for containerized deployment
 - `backend/Procfile` - Heroku backend configuration
 - `backend/env.example` - Backend environment template
 - `frontend/env.example` - Frontend environment template
 - `frontend/netlify.toml` - Netlify configuration
-- `frontend/vercel.json` - Vercel frontend configuration
-- `deploy.sh` - Linux/Mac deployment script
-- `deploy.bat` - Windows deployment script
 
 ### 📚 Documentation Created
+- `NETLIFY_RENDER_DEPLOY.md` - Complete deployment instructions for Netlify + Render
 - `DEPLOYMENT_GUIDE.md` - Complete deployment instructions
 - `QUICK_SETUP.md` - Quick service setup guide
 - `DEPLOYMENT_FIXES.md` - Common issues and solutions
 
 ## 🚀 Recommended Deployment Path
 
-### Option 1: Vercel (Easiest & Recommended)
+### Option 1: Render + Netlify (Easiest & Recommended)
 **Time: ~15 minutes**
 
 1. **Set up services** (follow `QUICK_SETUP.md`):
    - MongoDB Atlas database
    - Cloudinary account
 
-2. **Deploy backend**:
-   - Go to [Vercel](https://vercel.com)
+2. **Deploy backend to Render**:
+   - Go to [Render](https://render.com)
    - Import your GitHub repository
    - Set root directory to `backend`
    - Add environment variables
    - Deploy
 
-3. **Deploy frontend**:
-   - Create new Vercel project
+3. **Deploy frontend to Netlify**:
+   - Go to [Netlify](https://app.netlify.com)
+   - Connect your GitHub repository
    - Set root directory to `frontend`
    - Add backend URL to environment
    - Deploy
@@ -97,11 +96,8 @@ VITE_BACKEND_URL=https://your-backend-domain.com
 ### Initial Data Seeding
 After deployment, seed your database:
 ```bash
-# For Vercel/Railway
+# For Render/Heroku/Railway
 curl -X POST https://your-backend-url.com/api/seed
-
-# For Heroku
-heroku run npm run seed
 ```
 
 ## 🖼️ Image Storage

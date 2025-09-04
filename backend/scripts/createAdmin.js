@@ -1,9 +1,11 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('../models/Users');
 
 const createAdmin = async () => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/course-comparator');
+    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/rewear';
+    await mongoose.connect(mongoUri);
     console.log('Connected to MongoDB');
 
     // Check if admin already exists
