@@ -4,14 +4,14 @@
   "description": "ReWear - Community Clothing Exchange Application (Monorepo)",
   "private": true,
   "scripts": {
-    "build": "npm run build:frontend",
+    "build": "node build.js",
     "build:frontend": "cd frontend && npm install && npm run build",
     "build:backend": "cd backend && npm install",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
-    "vercel-build": "npm install && cd backend && npm install && cd ../frontend && npm install && npm run build",
+    "vercel-build": "npm run build",
     "start": "cd backend && npm start"
   },
   "devDependencies": {
