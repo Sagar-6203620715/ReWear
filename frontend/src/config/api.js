@@ -23,7 +23,7 @@ export const buildApiUrl = (endpoint) => {
 
 // Common API endpoints
 export const API_ENDPOINTS = {
-  HEALTH: buildApiUrl('health'),
+  HEALTH: `${API_BASE_URL}/health`,
   USERS: {
     PROFILE: buildApiUrl('users/profile'),
     DASHBOARD: buildApiUrl('users/dashboard'),
