@@ -18,6 +18,8 @@ const MONGO_URI = process.env.MONGO_URI;
 
 // Track last DB error for diagnostics
 let lastDbError = null;
+const dns = require('dns');
+const url = require('url');
 
 // CORS configuration
 const corsOptions = {
@@ -152,6 +154,29 @@ app.get("/api/db-status", (req, res) => {
       name: lastDbError.name || null
     } : null
   });
+});
+
+// Diagnostics: DNS/SRV resolution for Atlas host
+app.get("/api/dns-check", (req, res) => {
+  try {
+    if (!MONGO_URI) {
+      return res.status(400).json({ message: 'MONGO_URI not set' });
+    }
+    const parsed = new url.URL(MONGO_URI.replace('mongodb+srv://', 'http://'));
+    const host = parsed.host;
+    // Resolve SRV records for the cluster
+    dns.resolveSrv(`_mongodb._tcp.${host}`, (err, addresses) => {
+      const srv = err ? { error: err.message } : { records: addresses };
+      // Resolve A/AAAA for first target if available
+      const target = addresses && addresses[0] ? addresses[0].name : host;
+      dns.resolve(target, (err2, addrs) => {
+        const a = err2 ? { error: err2.message } : { records: addrs };
+        return res.json({ host, srv, a });
+      });
+    });
+  } catch (e) {
+    return res.status(500).json({ message: 'dns-check failed', error: e.message });
+  }
 });
 
 app.get("/", (req, res) => {
