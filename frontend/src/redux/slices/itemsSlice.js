@@ -1,14 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
-
+import { API_ENDPOINTS } from "../../config/api";
 
 // Async thunk to fetch items from API
 export const fetchItems = createAsyncThunk(
   "items/fetchItems",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000'}/api/items`);
+      const response = await axios.get(API_ENDPOINTS.ITEMS.ALL);
       return response.data.items || [];
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch items");
@@ -21,7 +20,7 @@ export const fetchItemsByCategory = createAsyncThunk(
   "items/fetchItemsByCategory",
   async (category, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000'}/api/items?category=${category}`);
+      const response = await axios.get(`${API_ENDPOINTS.ITEMS.ALL}?category=${category}`);
       return response.data.items || [];
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch items");
@@ -36,7 +35,7 @@ export const createItem = createAsyncThunk(
     try {
       const token = localStorage.getItem('userToken');
       
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000'}/api/items`, itemData, {
+      const response = await axios.post(API_ENDPOINTS.ITEMS.ALL, itemData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
