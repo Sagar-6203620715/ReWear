@@ -28,7 +28,8 @@ const corsOptions = {
       'http://127.0.0.1:3000',
       'http://127.0.0.1:5173',
       'https://course-comparator.netlify.app',
-      'https://your-frontend-domain.netlify.app'
+      'https://your-frontend-domain.netlify.app',
+      'https://re-wear-yxzu.vercel.app'
     ];
     
     // Add FRONTEND_URL from environment if it exists
@@ -111,7 +112,8 @@ const socketCorsOrigins = [
   'http://127.0.0.1:3000',
   'http://127.0.0.1:5173',
   'https://course-comparator.netlify.app',
-  'https://your-frontend-domain.netlify.app'
+  'https://your-frontend-domain.netlify.app',
+  'https://re-wear-yxzu.vercel.app'
 ];
 
 // Add environment variables to Socket.IO CORS
